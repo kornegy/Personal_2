@@ -1,0 +1,97 @@
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<div class="form-card reveal">
+    <EditForm Model="@_model" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+
+        @if (_status == Status.Sent)
+        {
+            <div class="form-msg ok">
+                <i class="bi bi-check-circle"></i>
+                Thanks! Your message was saved and your email app has opened so you can send it straight to my inbox.
+            </div>
+        }
+        else if (_status == Status.Error)
+        {
+            <div class="form-msg err">
+                <i class="bi bi-exclamation-triangle"></i>
+                Something went wrong. Please email me directly at <a href="mailto:@RecipientEmail">@RecipientEmail</a>.
+            </div>
+        }
+
+        <div class="field">
+            <label for="cf-name">Name</label>
+            <InputText id="cf-name" class="inp" @bind-Value="_model.Name" placeholder="Jane Doe" />
+            <ValidationMessage For="@(() => _model.Name)" class="val-err" />
+        </div>
+
+        <div class="field">
+            <label for="cf-email">Email</label>
+            <InputText id="cf-email" class="inp" @bind-Value="_model.Email" placeholder="jane@company.com" />
+            <ValidationMessage For="@(() => _model.Email)" class="val-err" />
+        </div>
+
+        <div class="field">
+            <label for="cf-msg">Message</label>
+            <InputTextArea id="cf-msg" class="inp" @bind-Value="_model.Message"
+                           placeholder="Tell me about the role, project or idea…" />
+            <ValidationMessage For="@(() => _model.Message)" class="val-err" />
+        </div>
+
+        <button type="submit" class="btn-x btn-primary-x" style="width:100%; justify-content:center;" disabled="@_busy">
+            @if (_busy)
+            {
+                <span>Sending…</span>
+            }
+            else
+            {
+                <i class="bi bi-send"></i>
+                <span>Send message</span>
+            }
+        </button>
+        <p class="form-hint"><i class="bi bi-envelope"></i> On send, your email app opens with the message pre-filled — delivered straight to my inbox.</p>
+    </EditForm>
+</div>
+
+@code {
+    /// <summary>Address the composed email is sent to.</summary>
+    [Parameter] public string RecipientEmail { get; set; } = "";
+
+    private enum Status { Idle, Sent, Error }
+
+    private ContactMessage _model = new();
+    private Status _status = Status.Idle;
+    private bool _busy;
+
+    private async Task Submit()
+    {
+        _busy = true;
+        _status = Status.Idle;
+        try
+        {
+            // 1) Store the message (best effort — a nice-to-have record on the server).
+            try { await Http.PostAsJsonAsync("api/contact", _model); } catch { /* non-critical */ }
+
+            // 2) Open the visitor's email client so the message reaches the inbox directly.
+            if (!string.IsNullOrWhiteSpace(RecipientEmail))
+            {
+                var subject = $"Portfolio enquiry from {_model.Name}";
+                var body = $"{_model.Message}\n\n— {_model.Name} ({_model.Email})";
+                await JS.InvokeVoidAsync("site.openMail", RecipientEmail, subject, body);
+            }
+
+            _status = Status.Sent;
+            _model = new ContactMessage();
+        }
+        catch
+        {
+            _status = Status.Error;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}
