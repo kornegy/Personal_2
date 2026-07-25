@@ -21,6 +21,7 @@ internal sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
         builder.Property(p => p.Phone).HasMaxLength(40);
         builder.Property(p => p.PhotoUrl).HasMaxLength(256);
         builder.Property(p => p.ResumeUrl).HasMaxLength(256);
+        builder.Property(p => p.YearsOfExperience).IsRequired();
 
         // На каждый язык допустим ровно один профиль.
         builder.HasIndex(p => p.LanguageCode).IsUnique();

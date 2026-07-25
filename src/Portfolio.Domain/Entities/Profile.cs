@@ -35,8 +35,11 @@ public class Profile
     /// <summary>Путь к PDF-резюме внутри wwwroot, например «files/cv.pdf».</summary>
     public string? ResumeUrl { get; set; }
 
-    /// <summary>Год начала коммерческой работы — из него считается опыт.</summary>
-    public int CareerStartYear { get; set; }
+    /// <summary>
+    /// Лет коммерческого опыта. Хранится числом, а не считается от года начала карьеры:
+    /// при перерывах между работами расчёт завышал бы стаж.
+    /// </summary>
+    public int YearsOfExperience { get; set; }
 
     public ICollection<SocialLink> SocialLinks { get; set; } = new List<SocialLink>();
 }

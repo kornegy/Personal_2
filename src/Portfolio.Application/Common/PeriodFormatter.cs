@@ -43,11 +43,4 @@ public static class PeriodFormatter
         var month = months[date.Month - 1];
         return $"{char.ToUpperInvariant(month[0])}{month[1..]} {date.Year}";
     }
-
-    /// <summary>Полных лет опыта с начала карьеры, но не меньше единицы.</summary>
-    public static int YearsSince(int careerStartYear, DateTimeOffset now)
-    {
-        var years = now.Year - careerStartYear;
-        return years < 1 ? 1 : years;
-    }
 }

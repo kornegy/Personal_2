@@ -9,5 +9,5 @@ public record ProjectDto(
     string? ImageUrl,
     string? DemoUrl,
     string? SourceUrl,
-    int Year,
+    int? Year,
     IReadOnlyList<string> Technologies);

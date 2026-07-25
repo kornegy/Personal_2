@@ -17,7 +17,10 @@
     <div class="project-card__body">
         <div class="project-card__head">
             <h3 class="project-card__title">@Project.Title</h3>
-            <span class="project-card__year">@Project.Year</span>
+            @if (Project.Year is not null)
+            {
+                <span class="project-card__year">@Project.Year</span>
+            }
         </div>
 
         <p class="project-card__summary">@Project.Summary</p>

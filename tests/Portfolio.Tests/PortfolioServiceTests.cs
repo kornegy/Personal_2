@@ -31,8 +31,7 @@ public class PortfolioServiceTests : IAsyncLifetime
         _context = new PortfolioDbContext(options);
         await new DatabaseInitializer(_context, NullLogger<DatabaseInitializer>.Instance).InitializeAsync();
 
-        var now = new DateTimeOffset(2026, 7, 25, 0, 0, 0, TimeSpan.Zero);
-        _service = new PortfolioService(new PortfolioRepository(_context), new StubTimeProvider(now));
+        _service = new PortfolioService(new PortfolioRepository(_context));
     }
 
     public async Task DisposeAsync()
@@ -110,9 +109,19 @@ public class PortfolioServiceTests : IAsyncLifetime
         var russian = await _service.GetExperienceAsync(Languages.Russian);
         var english = await _service.GetExperienceAsync(Languages.English);
 
-        russian.Should().Contain(item => item.IsCurrent);
-        russian.Should().Contain(item => item.Period.Contains("настоящее время"));
-        english.Should().Contain(item => item.Period.Contains("Present"));
+        russian.Should().NotBeEmpty();
+        english.Should().HaveCount(russian.Count);
+        russian.Should().Contain(item => item.Period.Contains("Сентябрь"));
+        english.Should().Contain(item => item.Period.Contains("September"));
+    }
+
+    [Fact]
+    public async Task GetExperienceAsync_ЗавершённоеМестоРаботыНеПомеченоКакТекущее()
+    {
+        var experience = await _service.GetExperienceAsync(Languages.Russian);
+
+        experience.Should().OnlyContain(item => item.Highlights.Count > 0);
+        experience.Should().NotContain(item => item.IsCurrent);
     }
 
     [Fact]

@@ -23,8 +23,8 @@ public class Project
 
     public string? SourceUrl { get; set; }
 
-    /// <summary>Год завершения — показывается на карточке.</summary>
-    public int Year { get; set; }
+    /// <summary>Год завершения. null — если проект не датирован, тогда на карточке года нет.</summary>
+    public int? Year { get; set; }
 
     public int SortOrder { get; set; }
 

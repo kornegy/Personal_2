@@ -24,7 +24,7 @@ internal static class RussianStrings
         HeroCtaContact = "Обсудить проект",
         HeroCtaProjects = "Посмотреть работы",
         HeroCtaResume = "Резюме",
-        HeroExperienceSuffix = "коммерческий опыт",
+        HeroExperienceSuffix = "коммерческого опыта",
         HeroPhotoAlt = "Фотография",
         YearsWord = PluralizeYears,
 

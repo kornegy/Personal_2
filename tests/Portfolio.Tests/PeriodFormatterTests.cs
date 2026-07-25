@@ -38,13 +38,4 @@ public class PeriodFormatterTests
         result.Should().Be("June 2023 — Present");
     }
 
-    [Theory]
-    [InlineData(2022, 2026, 4)]
-    [InlineData(2026, 2026, 1)] // меньше года всё равно показываем как год
-    public void YearsSince_СчитаетПолныеГоды(int startYear, int currentYear, int expected)
-    {
-        var now = new DateTimeOffset(currentYear, 7, 1, 0, 0, 0, TimeSpan.Zero);
-
-        PeriodFormatter.YearsSince(startYear, now).Should().Be(expected);
-    }
 }

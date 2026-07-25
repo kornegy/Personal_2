@@ -10,7 +10,7 @@ namespace Portfolio.Application.Mapping;
 /// </summary>
 internal static class PortfolioMappings
 {
-    public static ProfileDto ToDto(this Profile profile, DateTimeOffset now) => new(
+    public static ProfileDto ToDto(this Profile profile) => new(
         profile.FullName,
         profile.Title,
         profile.Headline,
@@ -20,7 +20,7 @@ internal static class PortfolioMappings
         profile.Phone,
         profile.PhotoUrl,
         profile.ResumeUrl,
-        PeriodFormatter.YearsSince(profile.CareerStartYear, now),
+        profile.YearsOfExperience,
         profile.SocialLinks
             .OrderBy(link => link.SortOrder)
             .Select(link => new SocialLinkDto(link.Name, link.Url, link.Icon))

@@ -111,9 +111,6 @@ namespace Portfolio.Infrastructure.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CareerStartYear")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(160)
@@ -155,6 +152,9 @@ namespace Portfolio.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(160)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("YearsOfExperience")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -205,7 +205,7 @@ namespace Portfolio.Infrastructure.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Year")
+                    b.Property<int?>("Year")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

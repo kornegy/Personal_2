@@ -5,13 +5,12 @@ using Portfolio.Shared.Contracts;
 namespace Portfolio.Application.Services;
 
 /// <inheritdoc cref="IPortfolioService" />
-internal sealed class PortfolioService(IPortfolioRepository repository, TimeProvider timeProvider) : IPortfolioService
+internal sealed class PortfolioService(IPortfolioRepository repository) : IPortfolioService
 {
     public async Task<ProfileDto?> GetProfileAsync(string languageCode, CancellationToken cancellationToken = default)
     {
-        var language = Languages.Normalize(languageCode);
-        var profile = await repository.GetProfileAsync(language, cancellationToken);
-        return profile?.ToDto(timeProvider.GetUtcNow());
+        var profile = await repository.GetProfileAsync(Languages.Normalize(languageCode), cancellationToken);
+        return profile?.ToDto();
     }
 
     public async Task<IReadOnlyList<SkillCategoryDto>> GetSkillsAsync(string languageCode, CancellationToken cancellationToken = default)

@@ -64,7 +64,7 @@ namespace Portfolio.Infrastructure.Migrations
                     Phone = table.Column<string>(type: "TEXT", maxLength: 40, nullable: true),
                     PhotoUrl = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     ResumeUrl = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    CareerStartYear = table.Column<int>(type: "INTEGER", nullable: false)
+                    YearsOfExperience = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,7 +84,7 @@ namespace Portfolio.Infrastructure.Migrations
                     ImageUrl = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     DemoUrl = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
                     SourceUrl = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
-                    Year = table.Column<int>(type: "INTEGER", nullable: false),
+                    Year = table.Column<int>(type: "INTEGER", nullable: true),
                     SortOrder = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
