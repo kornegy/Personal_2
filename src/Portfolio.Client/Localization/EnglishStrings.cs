@@ -59,6 +59,7 @@ internal static class EnglishStrings
         ContactFieldSubject = "Subject",
         ContactFieldMessage = "Message",
         ContactPlaceholderName = "How should I address you",
+        ContactPlaceholderEmail = "you@example.com",
         ContactPlaceholderSubject = "For example: landing page for a studio",
         ContactPlaceholderMessage = "Describe the task, timeline and budget",
         ContactHoneypotLabel = "Leave this field empty",

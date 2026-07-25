@@ -8,5 +8,5 @@ public interface IContactMessageRepository
     Task AddAsync(ContactMessage message, CancellationToken cancellationToken = default);
 
     /// <summary>Сколько сообщений пришло с этого отправителя начиная с указанного момента.</summary>
-    Task<int> CountSinceAsync(string senderIpHash, DateTimeOffset since, CancellationToken cancellationToken = default);
+    Task<int> CountSinceAsync(string senderIpHash, DateTime sinceUtc, CancellationToken cancellationToken = default);
 }

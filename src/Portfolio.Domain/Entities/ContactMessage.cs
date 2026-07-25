@@ -13,7 +13,12 @@ public class ContactMessage
 
     public string Body { get; set; } = string.Empty;
 
-    public DateTimeOffset CreatedAtUtc { get; set; }
+    /// <summary>
+    /// Момент получения в UTC. Именно DateTime, а не DateTimeOffset:
+    /// SQLite не умеет сравнивать DateTimeOffset в запросах, а проверка лимита
+    /// сообщений как раз сравнивает даты.
+    /// </summary>
+    public DateTime CreatedAtUtc { get; set; }
 
     /// <summary>
     /// SHA-256 от IP-адреса отправителя. Хранится в виде хеша, чтобы иметь защиту от спама,

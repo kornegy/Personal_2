@@ -56,7 +56,7 @@ internal static class PortfolioMappings
         SplitHighlights(experience.Description));
 
     /// <summary>Описание хранится строками — каждая непустая строка становится пунктом списка.</summary>
-    private static IReadOnlyList<string> SplitHighlights(string description) =>
+    private static List<string> SplitHighlights(string description) =>
         description
             .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .ToList();

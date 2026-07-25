@@ -131,11 +131,7 @@ dotnet tool install --global dotnet-ef          # один раз
 
 dotnet ef migrations add ИмяМиграции \
   --project src/Portfolio.Infrastructure \
-  --startup-project src/Portfolio.Api
-
-dotnet ef database update \
-  --project src/Portfolio.Infrastructure \
-  --startup-project src/Portfolio.Api
+  --startup-project src/Portfolio.Infrastructure
 ```
 
 Проверить, что снимок модели совпадает с сущностями:
@@ -143,8 +139,15 @@ dotnet ef database update \
 ```bash
 dotnet ef migrations has-pending-model-changes \
   --project src/Portfolio.Infrastructure \
-  --startup-project src/Portfolio.Api
+  --startup-project src/Portfolio.Infrastructure
 ```
+
+Стартовый проект здесь — сам `Portfolio.Infrastructure`, а не `Portfolio.Api`:
+контекст для инструмента создаёт `PortfolioDbContextFactory`. Благодаря этому
+пакет `Microsoft.EntityFrameworkCore.Design` нужен только в слое данных
+и не тянется в веб-приложение.
+
+Применять миграции вручную не нужно — приложение делает это при старте.
 
 Откатить последнюю ещё не применённую миграцию — `dotnet ef migrations remove` с теми же ключами.
 

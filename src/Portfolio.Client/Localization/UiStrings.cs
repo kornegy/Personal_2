@@ -69,6 +69,7 @@ public sealed class UiStrings
     public required string ContactFieldSubject { get; init; }
     public required string ContactFieldMessage { get; init; }
     public required string ContactPlaceholderName { get; init; }
+    public required string ContactPlaceholderEmail { get; init; }
     public required string ContactPlaceholderSubject { get; init; }
     public required string ContactPlaceholderMessage { get; init; }
     public required string ContactHoneypotLabel { get; init; }

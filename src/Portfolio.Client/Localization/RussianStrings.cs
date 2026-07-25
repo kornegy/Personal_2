@@ -59,6 +59,7 @@ internal static class RussianStrings
         ContactFieldSubject = "Тема",
         ContactFieldMessage = "Сообщение",
         ContactPlaceholderName = "Как к вам обращаться",
+        ContactPlaceholderEmail = "you@example.com",
         ContactPlaceholderSubject = "Например: лендинг для студии",
         ContactPlaceholderMessage = "Опишите задачу, сроки и бюджет",
         ContactHoneypotLabel = "Не заполняйте это поле",

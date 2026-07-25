@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+
+    <!--
+      CA1707 — запрещает подчёркивания в именах. В тестах имя вида
+               Метод_Условие_Результат читается лучше, это общепринятый стиль.
+      CA1001 — требует IDisposable у класса с полями-ресурсами. Здесь ресурсы
+               освобождает IAsyncLifetime.DisposeAsync, который вызывает xUnit.
+    -->
+    <NoWarn>$(NoWarn);CA1707;CA1001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
+using Portfolio.Shared.Contracts;
 
 namespace Portfolio.Api.Extensions;
 
@@ -42,8 +43,10 @@ public static class RateLimitingExtensions
             options.OnRejected = async (context, cancellationToken) =>
             {
                 context.HttpContext.Response.ContentType = "application/json";
+                // Отвечаем тем же контрактом, что и обычный ответ формы:
+                // текст подставит клиент на нужном языке.
                 await context.HttpContext.Response.WriteAsJsonAsync(
-                    new { success = false, message = "Слишком много запросов. Повторите попытку позже." },
+                    ContactResult.Failed(ContactResultCodes.RateLimited),
                     cancellationToken);
             };
         });

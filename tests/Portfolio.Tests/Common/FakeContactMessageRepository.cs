@@ -14,6 +14,6 @@ internal sealed class FakeContactMessageRepository : IContactMessageRepository
         return Task.CompletedTask;
     }
 
-    public Task<int> CountSinceAsync(string senderIpHash, DateTimeOffset since, CancellationToken cancellationToken = default) =>
-        Task.FromResult(Messages.Count(m => m.SenderIpHash == senderIpHash && m.CreatedAtUtc >= since));
+    public Task<int> CountSinceAsync(string senderIpHash, DateTime sinceUtc, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Messages.Count(m => m.SenderIpHash == senderIpHash && m.CreatedAtUtc >= sinceUtc));
 }

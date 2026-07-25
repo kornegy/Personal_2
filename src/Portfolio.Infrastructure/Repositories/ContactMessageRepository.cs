@@ -16,9 +16,9 @@ internal sealed class ContactMessageRepository(PortfolioDbContext context) : ICo
 
     public Task<int> CountSinceAsync(
         string senderIpHash,
-        DateTimeOffset since,
+        DateTime sinceUtc,
         CancellationToken cancellationToken = default) =>
         context.ContactMessages
             .AsNoTracking()
-            .CountAsync(m => m.SenderIpHash == senderIpHash && m.CreatedAtUtc >= since, cancellationToken);
+            .CountAsync(m => m.SenderIpHash == senderIpHash && m.CreatedAtUtc >= sinceUtc, cancellationToken);
 }

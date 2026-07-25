@@ -29,7 +29,7 @@ internal sealed class ContactService(
             return ContactResult.Accepted();
         }
 
-        var now = timeProvider.GetUtcNow();
+        var now = timeProvider.GetUtcNow().UtcDateTime;
         var ipHash = SenderIpHasher.Hash(senderIp, _options.IpHashSalt);
         var windowStart = now.AddMinutes(-_options.FloodWindowMinutes);
 
