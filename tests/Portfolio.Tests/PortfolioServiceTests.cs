@@ -50,7 +50,7 @@ public class PortfolioServiceTests : IAsyncLifetime
     }
 
     [Theory]
-    [InlineData(Languages.Russian)]
+    [InlineData(Languages.Ukrainian)]
     [InlineData(Languages.English)]
     public async Task GetProfileAsync_ЕстьПрофильНаКаждомЯзыке(string language)
     {
@@ -64,25 +64,25 @@ public class PortfolioServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task GetProfileAsync_РусскаяИАнглийскаяВерсииОтличаются()
+    public async Task GetProfileAsync_УкраинскаяИАнглийскаяВерсииОтличаются()
     {
-        var russian = await _service.GetProfileAsync(Languages.Russian);
+        var ukrainian = await _service.GetProfileAsync(Languages.Ukrainian);
         var english = await _service.GetProfileAsync(Languages.English);
 
-        russian!.Title.Should().NotBe(english!.Title);
+        ukrainian!.Title.Should().NotBe(english!.Title);
     }
 
     [Fact]
     public async Task GetProfileAsync_НеизвестныйЯзык_ВозвращаетВерсиюПоУмолчанию()
     {
         var fallback = await _service.GetProfileAsync("zz");
-        var russian = await _service.GetProfileAsync(Languages.Russian);
+        var ukrainian = await _service.GetProfileAsync(Languages.Ukrainian);
 
-        fallback!.Title.Should().Be(russian!.Title);
+        fallback!.Title.Should().Be(ukrainian!.Title);
     }
 
     [Theory]
-    [InlineData(Languages.Russian)]
+    [InlineData(Languages.Ukrainian)]
     [InlineData(Languages.English)]
     public async Task GetSkillsAsync_КатегорииНеПустые(string language)
     {
@@ -95,30 +95,30 @@ public class PortfolioServiceTests : IAsyncLifetime
     [Fact]
     public async Task GetProjectsAsync_ОдинаковоеЧислоПроектовНаОбоихЯзыках()
     {
-        var russian = await _service.GetProjectsAsync(Languages.Russian);
+        var ukrainian = await _service.GetProjectsAsync(Languages.Ukrainian);
         var english = await _service.GetProjectsAsync(Languages.English);
 
-        russian.Should().NotBeEmpty();
-        english.Should().HaveCount(russian.Count);
-        russian.Should().OnlyContain(project => project.Technologies.Count > 0);
+        ukrainian.Should().NotBeEmpty();
+        english.Should().HaveCount(ukrainian.Count);
+        ukrainian.Should().OnlyContain(project => project.Technologies.Count > 0);
     }
 
     [Fact]
     public async Task GetExperienceAsync_ПериодПереводитсяВместеСЯзыком()
     {
-        var russian = await _service.GetExperienceAsync(Languages.Russian);
+        var ukrainian = await _service.GetExperienceAsync(Languages.Ukrainian);
         var english = await _service.GetExperienceAsync(Languages.English);
 
-        russian.Should().NotBeEmpty();
-        english.Should().HaveCount(russian.Count);
-        russian.Should().Contain(item => item.Period.Contains("Сентябрь"));
+        ukrainian.Should().NotBeEmpty();
+        english.Should().HaveCount(ukrainian.Count);
+        ukrainian.Should().Contain(item => item.Period.Contains("Вересень"));
         english.Should().Contain(item => item.Period.Contains("September"));
     }
 
     [Fact]
     public async Task GetExperienceAsync_ЗавершённоеМестоРаботыНеПомеченоКакТекущее()
     {
-        var experience = await _service.GetExperienceAsync(Languages.Russian);
+        var experience = await _service.GetExperienceAsync(Languages.Ukrainian);
 
         experience.Should().OnlyContain(item => item.Highlights.Count > 0);
         experience.Should().NotContain(item => item.IsCurrent);

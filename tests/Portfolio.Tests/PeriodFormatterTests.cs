@@ -9,17 +9,17 @@ public class PeriodFormatterTests
     [Fact]
     public void Format_ЗакрытыйПериод_ВозвращаетОбеДаты()
     {
-        var result = PeriodFormatter.Format(new DateOnly(2022, 3, 1), new DateOnly(2023, 5, 1), Languages.Russian);
+        var result = PeriodFormatter.Format(new DateOnly(2022, 3, 1), new DateOnly(2023, 5, 1), Languages.Ukrainian);
 
-        result.Should().Be("Март 2022 — Май 2023");
+        result.Should().Be("Березень 2022 — Травень 2023");
     }
 
     [Fact]
-    public void Format_БезДатыОкончания_ПоказываетНастоящееВремя()
+    public void Format_БезДатыОкончания_ПоказываетТекущийМомент()
     {
-        var result = PeriodFormatter.Format(new DateOnly(2023, 6, 1), null, Languages.Russian);
+        var result = PeriodFormatter.Format(new DateOnly(2023, 6, 1), null, Languages.Ukrainian);
 
-        result.Should().Be("Июнь 2023 — настоящее время");
+        result.Should().Be("Червень 2023 — дотепер");
     }
 
     [Fact]
@@ -38,4 +38,11 @@ public class PeriodFormatterTests
         result.Should().Be("June 2023 — Present");
     }
 
+    [Fact]
+    public void Format_НеизвестныйЯзык_ПереходитНаАнглийский()
+    {
+        var result = PeriodFormatter.Format(new DateOnly(2023, 6, 1), null, "zz");
+
+        result.Should().Be("June 2023 — Present");
+    }
 }

@@ -20,7 +20,7 @@ window.portfolioApp = {
     },
 
     getBrowserLanguage: function () {
-        const language = navigator.language || 'ru';
+        const language = navigator.language || 'uk';
         return language.slice(0, 2).toLowerCase();
     },
 

@@ -4,11 +4,11 @@ namespace Portfolio.Infrastructure.Persistence.Seed;
 
 /// <summary>
 /// Собирает начальные данные из всех языковых пакетов и проставляет им код языка.
-/// Сами тексты лежат в <see cref="RussianContent"/> и <see cref="EnglishContent"/>.
+/// Сами тексты лежат в <see cref="UkrainianContent"/> и <see cref="EnglishContent"/>.
 /// </summary>
 internal static class PortfolioSeedData
 {
-    private static readonly IContentPack[] Packs = [new RussianContent(), new EnglishContent()];
+    private static readonly IContentPack[] Packs = [new UkrainianContent(), new EnglishContent()];
 
     public static IReadOnlyList<Profile> CreateProfiles() =>
         Packs.Select(pack =>

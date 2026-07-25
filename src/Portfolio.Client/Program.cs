@@ -17,7 +17,7 @@ builder.Services.AddScoped<LanguageState>();
 
 var host = builder.Build();
 
-// Язык определяем до первой отрисовки, иначе интерфейс мигнёт русской версией.
+// Язык определяем до первой отрисовки, иначе интерфейс мигнёт версией по умолчанию.
 await host.Services.GetRequiredService<LanguageState>().InitializeAsync();
 
 await host.RunAsync();

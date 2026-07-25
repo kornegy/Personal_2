@@ -6,13 +6,13 @@ namespace Portfolio.Shared.Contracts;
 /// </summary>
 public static class Languages
 {
-    public const string Russian = "ru";
+    public const string Ukrainian = "uk";
 
     public const string English = "en";
 
-    public const string Default = Russian;
+    public const string Default = Ukrainian;
 
-    public static readonly IReadOnlyList<string> All = [Russian, English];
+    public static readonly IReadOnlyList<string> All = [Ukrainian, English];
 
     /// <summary>Приводит произвольную строку к поддерживаемому коду языка.</summary>
     public static string Normalize(string? code)

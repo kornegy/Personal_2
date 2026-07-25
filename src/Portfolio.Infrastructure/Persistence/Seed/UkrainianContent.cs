@@ -4,34 +4,34 @@ using Portfolio.Shared.Contracts;
 namespace Portfolio.Infrastructure.Persistence.Seed;
 
 /// <summary>
-/// РУССКАЯ ВЕРСИЯ САЙТА — весь текст лежит здесь.
+/// УКРАИНСКАЯ ВЕРСИЯ САЙТА — весь текст лежит здесь.
 ///
 /// Данные взяты из резюме. Чтобы обновить сайт, правьте только этот файл
 /// и его английскую пару <see cref="EnglishContent"/>: код трогать не нужно.
 /// Код языка проставляется автоматически, указывать его в сущностях не надо.
 /// </summary>
-internal sealed class RussianContent : IContentPack
+internal sealed class UkrainianContent : IContentPack
 {
-    public string LanguageCode => Languages.Russian;
+    public string LanguageCode => Languages.Ukrainian;
 
     public Profile CreateProfile() => new()
     {
         FullName = "Артем Коваль",
-        Title = "Front-End разработчик · React и TypeScript",
-        Headline = "3 года коммерческого опыта: CRM-системы, сайты и веб-приложения на React и TypeScript.",
+        Title = "Front-End розробник · React і TypeScript",
+        Headline = "3 роки комерційного досвіду: CRM-системи, сайти та вебзастосунки на React і TypeScript.",
         About =
-            "Front-End разработчик с трёхлетним коммерческим опытом. Делал CRM-системы, сайты " +
-            "и веб-приложения на React и TypeScript.\n" +
-            "В Bovios Pharm развивал внутренние CRM и веб-приложения компании: многостраничные интерфейсы " +
-            "со сложным состоянием на MobX, адаптивные компоненты на Material-UI и Tailwind CSS, " +
-            "интеграцию с REST API через Axios.\n" +
-            "Постоянно осваиваю новые технологии и углубляю то, что уже умею. Бакалавр по компьютерным наукам " +
-            "Хмельницкого национального университета. Украинский — родной, английский — B1.\n" +
-            "Открыт к проектной работе и к позиции в команде.",
-        Location = "Хмельницкий, Украина",
+            "Front-End розробник із трирічним комерційним досвідом. Робив CRM-системи, сайти " +
+            "та вебзастосунки на React і TypeScript.\n" +
+            "У Bovios Pharm розвивав внутрішні CRM і вебзастосунки компанії: багатосторінкові інтерфейси " +
+            "зі складним станом на MobX, адаптивні компоненти на Material-UI і Tailwind CSS, " +
+            "інтеграцію з REST API через Axios.\n" +
+            "Постійно опановую нові технології та поглиблюю те, що вже вмію. Бакалавр з комп'ютерних наук " +
+            "Хмельницького національного університету. Українська — рідна, англійська — B1.\n" +
+            "Відкритий до проєктної роботи та до позиції в команді.",
+        Location = "Хмельницький, Україна",
         Email = "krager.2108@gmail.com",
         Phone = "+38 098 940 55 18",
-        PhotoUrl = "img/avatar.svg", // замените на своё фото: положите файл в wwwroot/img/
+        PhotoUrl = "img/avatar.svg", // замініть на своє фото: покладіть файл у wwwroot/img/
         ResumeUrl = "files/artem-koval-cv-en.pdf",
         YearsOfExperience = 3,
         SocialLinks =
@@ -70,7 +70,7 @@ internal sealed class RussianContent : IContentPack
         },
         new SkillCategory
         {
-            Name = "Состояние и данные",
+            Name = "Стан і дані",
             Icon = "diagram-3",
             SortOrder = 2,
             Skills =
@@ -83,26 +83,26 @@ internal sealed class RussianContent : IContentPack
         },
         new SkillCategory
         {
-            Name = "Интерфейс",
+            Name = "Інтерфейс",
             Icon = "palette",
             SortOrder = 3,
             Skills =
             [
                 new Skill { Name = "Material-UI", SortOrder = 1 },
                 new Skill { Name = "Tailwind CSS", SortOrder = 2 },
-                new Skill { Name = "Адаптивная вёрстка", SortOrder = 3 }
+                new Skill { Name = "Адаптивна верстка", SortOrder = 3 }
             ]
         },
         new SkillCategory
         {
-            Name = "Работа в команде",
+            Name = "Робота в команді",
             Icon = "tools",
             SortOrder = 4,
             Skills =
             [
                 new Skill { Name = "Git", SortOrder = 1 },
-                new Skill { Name = "Код-ревью", SortOrder = 2 },
-                new Skill { Name = "Планирование задач", SortOrder = 3 }
+                new Skill { Name = "Код-рев'ю", SortOrder = 2 },
+                new Skill { Name = "Планування задач", SortOrder = 3 }
             ]
         }
     ];
@@ -114,11 +114,11 @@ internal sealed class RussianContent : IContentPack
     [
         new Project
         {
-            Title = "CRM для фармацевтической компании",
-            Summary = "Внутренняя CRM на React и TypeScript, которую развивал почти три года.",
+            Title = "CRM для фармацевтичної компанії",
+            Summary = "Внутрішня CRM на React і TypeScript, яку розвивав майже три роки.",
             Description =
-                "Многостраничное приложение со сложным состоянием на MobX. Отвечал за разработку " +
-                "и поддержку: новые разделы, доработку существующих и разбор ошибок.",
+                "Багатосторінковий застосунок зі складним станом на MobX. Відповідав за розробку " +
+                "та підтримку: нові розділи, доопрацювання наявних і розбір помилок.",
             ImageUrl = null,
             DemoUrl = null,
             SourceUrl = null,
@@ -134,11 +134,11 @@ internal sealed class RussianContent : IContentPack
         },
         new Project
         {
-            Title = "Внутренние веб-приложения",
-            Summary = "Набор рабочих инструментов для сотрудников компании.",
+            Title = "Внутрішні вебзастосунки",
+            Summary = "Набір робочих інструментів для співробітників компанії.",
             Description =
-                "Адаптивные интерфейсы на Material-UI и Tailwind CSS, интеграция с REST API " +
-                "через Axios, маршрутизация на React Router.",
+                "Адаптивні інтерфейси на Material-UI і Tailwind CSS, інтеграція з REST API " +
+                "через Axios, маршрутизація на React Router.",
             ImageUrl = null,
             DemoUrl = null,
             SourceUrl = null,
@@ -160,13 +160,13 @@ internal sealed class RussianContent : IContentPack
         new Experience
         {
             Company = "Bovios Pharm",
-            Position = "React-разработчик",
+            Position = "React-розробник",
             Description =
-                "Разработка и поддержка CRM-систем и внутренних веб-приложений на React.js и TypeScript.\n" +
-                "Управление состоянием через MobX в сложных многостраничных приложениях.\n" +
-                "Адаптивные компоненты интерфейса на Material-UI и Tailwind CSS.\n" +
-                "Интеграция с REST API через Axios, маршрутизация на React Router.\n" +
-                "Работа в команде через Git: код-ревью и планирование задач.",
+                "Розробка та підтримка CRM-систем і внутрішніх вебзастосунків на React.js і TypeScript.\n" +
+                "Керування станом через MobX у складних багатосторінкових застосунках.\n" +
+                "Адаптивні компоненти інтерфейсу на Material-UI і Tailwind CSS.\n" +
+                "Інтеграція з REST API через Axios, маршрутизація на React Router.\n" +
+                "Робота в команді через Git: код-рев'ю та планування задач.",
             StartDate = new DateOnly(2022, 9, 1),
             EndDate = new DateOnly(2025, 7, 1),
             SortOrder = 1

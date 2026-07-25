@@ -6,7 +6,7 @@ namespace Portfolio.Infrastructure.Persistence.Seed;
 /// <summary>
 /// ENGLISH VERSION OF THE SITE — all text lives here.
 ///
-/// Taken from the CV. Keep it in sync with <see cref="RussianContent"/>:
+/// Taken from the CV. Keep it in sync with <see cref="UkrainianContent"/>:
 /// same projects, same jobs, same order. The language code is applied automatically.
 /// </summary>
 internal sealed class EnglishContent : IContentPack
