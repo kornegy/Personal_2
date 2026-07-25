@@ -28,7 +28,12 @@ ENV ConnectionStrings__PortfolioDatabase="Data Source=/data/portfolio.db"
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Приложение работает не от root.
-RUN mkdir -p /data && useradd --uid 10001 --create-home app && chown -R app:app /app /data
+# В образах .NET 8 пользователь app уже заведён Microsoft, поэтому создаём его
+# только если его нет — иначе useradd падает с кодом 9.
+# Двоеточие без имени группы означает «группа по умолчанию для этого пользователя».
+RUN mkdir -p /data \
+    && (id -u app >/dev/null 2>&1 || useradd --uid 10001 --create-home app) \
+    && chown -R app: /app /data
 USER app
 
 VOLUME ["/data"]
