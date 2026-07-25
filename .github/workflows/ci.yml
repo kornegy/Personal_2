@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Сборка и тесты
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Установка .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Восстановление пакетов
+        run: dotnet restore Portfolio.sln
+
+      - name: Сборка
+        run: dotnet build Portfolio.sln --configuration Release --no-restore
+
+      - name: Тесты
+        run: dotnet test Portfolio.sln --configuration Release --no-build --verbosity normal

@@ -1,0 +1,78 @@
+@page "/"
+@inherits LocalizedComponentBase
+@inject IPortfolioApi Api
+
+@* Одностраничный сайт: данные загружаются один раз и перезагружаются при смене языка. *@
+
+<PageTitle>@(_profile?.FullName ?? T.PageTitleFallback) — @(_profile?.Title ?? T.PageTitleRoleFallback)</PageTitle>
+
+@if (_isLoading)
+{
+    <div class="container-narrow">
+        <LoadingBlock Text="@T.LoadingPortfolio" />
+    </div>
+}
+else if (_profile is null)
+{
+    <div class="container-narrow">
+        <section class="section">
+            <h1 class="section-title">@T.UnavailableTitle</h1>
+            <p class="text-muted-soft">@T.UnavailableText</p>
+        </section>
+    </div>
+}
+else
+{
+    <HeroSection Profile="_profile" />
+    <AboutSection Profile="_profile" ProjectCount="_projects.Count" TechnologyCount="TechnologyCount" />
+    <SkillsSection Categories="_skills" />
+    <ProjectsSection Projects="_projects" />
+    <ExperienceSection Items="_experience" />
+    <ContactSection Profile="_profile" />
+}
+
+@code {
+    private readonly CancellationTokenSource _cts = new();
+
+    private ProfileDto? _profile;
+    private IReadOnlyList<SkillCategoryDto> _skills = [];
+    private IReadOnlyList<ProjectDto> _projects = [];
+    private IReadOnlyList<ExperienceDto> _experience = [];
+    private bool _isLoading = true;
+
+    private int TechnologyCount => _skills.Sum(category => category.Skills.Count);
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    /// <summary>При смене языка контент приходит с сервера заново.</summary>
+    protected override Task OnLanguageChangedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+
+        var language = Language.Current;
+        var token = _cts.Token;
+
+        // Запросы независимы, поэтому идут параллельно.
+        var profileTask = Api.GetProfileAsync(language, token);
+        var skillsTask = Api.GetSkillsAsync(language, token);
+        var projectsTask = Api.GetProjectsAsync(language, token);
+        var experienceTask = Api.GetExperienceAsync(language, token);
+
+        await Task.WhenAll(profileTask, skillsTask, projectsTask, experienceTask);
+
+        _profile = profileTask.Result;
+        _skills = skillsTask.Result;
+        _projects = projectsTask.Result;
+        _experience = experienceTask.Result;
+        _isLoading = false;
+    }
+
+    public override void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+        base.Dispose();
+    }
+}

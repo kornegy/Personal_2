@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Фото профиля">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141814"/>
+      <stop offset="100%" stop-color="#0A0B0A"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <circle cx="200" cy="160" r="62" fill="none" stroke="#22C55E" stroke-width="6"/>
+  <path d="M96 330c0-57 47-92 104-92s104 35 104 92" fill="none" stroke="#22C55E" stroke-width="6" stroke-linecap="round"/>
+  <text x="200" y="382" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" fill="#9AA39C">
+    замените на своё фото
+  </text>
+</svg>

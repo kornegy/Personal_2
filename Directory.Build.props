@@ -1,0 +1,26 @@
+<Project>
+
+  <!--
+    Общие настройки для всех проектов решения.
+    Держим их в одном месте, чтобы .csproj файлы оставались минимальными.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+
+    <!--
+      CA1848 — предлагает LoggerMessage-делегаты ради скорости логирования.
+               Для сайта-визитки это лишнее усложнение: логов единицы в час.
+      CA1716 — ругается на слово Shared в имени namespace, потому что это ключевое
+               слово в Visual Basic. Проект чисто на C#, имя оставляем говорящим.
+    -->
+    <NoWarn>$(NoWarn);CA1848;CA1716</NoWarn>
+  </PropertyGroup>
+
+</Project>

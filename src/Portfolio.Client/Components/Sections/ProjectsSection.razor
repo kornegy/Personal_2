@@ -1,0 +1,27 @@
+@inherits LocalizedComponentBase
+
+@* Работы: что было сделано и на чём. *@
+
+<section id="projects" class="section">
+    <div class="container-narrow">
+        <SectionHeader Label="@T.ProjectsLabel" Title="@T.ProjectsTitle" Subtitle="@T.ProjectsSubtitle" />
+
+        @if (Projects.Count == 0)
+        {
+            <LoadingBlock Text="@T.ProjectsUnavailable" />
+        }
+        else
+        {
+            <div class="projects-grid">
+                @foreach (var project in Projects)
+                {
+                    <ProjectCard Project="project" />
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ProjectDto> Projects { get; set; } = [];
+}
