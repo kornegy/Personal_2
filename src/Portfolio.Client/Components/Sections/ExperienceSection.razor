@@ -1,12 +1,14 @@
+@inherits LocalizedComponentBase
+
 @* Таймлайн опыта: где работал и что делал. *@
 
 <section id="experience" class="section">
     <div class="container-narrow">
-        <SectionHeader Label="Опыт" Title="Где и над чем работал" />
+        <SectionHeader Label="@T.ExperienceLabel" Title="@T.ExperienceTitle" />
 
         @if (Items.Count == 0)
         {
-            <LoadingBlock Text="Данные об опыте недоступны" />
+            <LoadingBlock Text="@T.ExperienceUnavailable" />
         }
         else
         {

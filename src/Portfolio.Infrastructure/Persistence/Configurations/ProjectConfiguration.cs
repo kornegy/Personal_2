@@ -11,6 +11,7 @@ internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.ToTable("Projects");
         builder.HasKey(p => p.Id);
 
+        builder.Property(p => p.LanguageCode).HasMaxLength(2).IsRequired();
         builder.Property(p => p.Title).HasMaxLength(120).IsRequired();
         builder.Property(p => p.Summary).HasMaxLength(300).IsRequired();
         builder.Property(p => p.Description).HasMaxLength(2000).IsRequired();
@@ -18,7 +19,7 @@ internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.DemoUrl).HasMaxLength(300);
         builder.Property(p => p.SourceUrl).HasMaxLength(300);
 
-        builder.HasIndex(p => p.SortOrder);
+        builder.HasIndex(p => new { p.LanguageCode, p.SortOrder });
 
         builder.HasMany(p => p.Technologies)
             .WithOne(t => t.Project!)

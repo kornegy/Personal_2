@@ -8,6 +8,9 @@ public class Profile
 {
     public int Id { get; set; }
 
+    /// <summary>Код языка: «ru» или «en». На каждый язык — своя запись.</summary>
+    public string LanguageCode { get; set; } = string.Empty;
+
     /// <summary>Имя и фамилия.</summary>
     public string FullName { get; set; } = string.Empty;
 

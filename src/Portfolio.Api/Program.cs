@@ -22,8 +22,12 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPortfolioRateLimiting();
 
+// Кэш общий для всех посетителей, поэтому ключ обязан учитывать язык —
+// иначе первый зашедший «зафиксирует» свою версию контента для остальных.
 builder.Services.AddOutputCache(options =>
-    options.AddPolicy(PortfolioEndpoints.CachePolicy, policy => policy.Expire(TimeSpan.FromMinutes(10))));
+    options.AddPolicy(PortfolioEndpoints.CachePolicy, policy => policy
+        .Expire(TimeSpan.FromMinutes(10))
+        .SetVaryByQuery(PortfolioEndpoints.LanguageQueryParameter)));
 
 builder.Services.AddHsts(options =>
 {

@@ -11,10 +11,11 @@ internal sealed class SkillCategoryConfiguration : IEntityTypeConfiguration<Skil
         builder.ToTable("SkillCategories");
         builder.HasKey(c => c.Id);
 
+        builder.Property(c => c.LanguageCode).HasMaxLength(2).IsRequired();
         builder.Property(c => c.Name).HasMaxLength(80).IsRequired();
         builder.Property(c => c.Icon).HasMaxLength(60).IsRequired();
 
-        builder.HasIndex(c => c.SortOrder);
+        builder.HasIndex(c => new { c.LanguageCode, c.SortOrder });
 
         builder.HasMany(c => c.Skills)
             .WithOne(s => s.Category!)

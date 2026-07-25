@@ -11,17 +11,17 @@ namespace Portfolio.Client.Services;
 /// </summary>
 public sealed class PortfolioApiClient(HttpClient httpClient, ILogger<PortfolioApiClient> logger) : IPortfolioApi
 {
-    public Task<ProfileDto?> GetProfileAsync(CancellationToken cancellationToken = default) =>
-        GetAsync<ProfileDto>("api/profile", cancellationToken);
+    public Task<ProfileDto?> GetProfileAsync(string languageCode, CancellationToken cancellationToken = default) =>
+        GetAsync<ProfileDto>("api/profile", languageCode, cancellationToken);
 
-    public async Task<IReadOnlyList<SkillCategoryDto>> GetSkillsAsync(CancellationToken cancellationToken = default) =>
-        await GetAsync<List<SkillCategoryDto>>("api/skills", cancellationToken) ?? [];
+    public async Task<IReadOnlyList<SkillCategoryDto>> GetSkillsAsync(string languageCode, CancellationToken cancellationToken = default) =>
+        await GetAsync<List<SkillCategoryDto>>("api/skills", languageCode, cancellationToken) ?? [];
 
-    public async Task<IReadOnlyList<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken = default) =>
-        await GetAsync<List<ProjectDto>>("api/projects", cancellationToken) ?? [];
+    public async Task<IReadOnlyList<ProjectDto>> GetProjectsAsync(string languageCode, CancellationToken cancellationToken = default) =>
+        await GetAsync<List<ProjectDto>>("api/projects", languageCode, cancellationToken) ?? [];
 
-    public async Task<IReadOnlyList<ExperienceDto>> GetExperienceAsync(CancellationToken cancellationToken = default) =>
-        await GetAsync<List<ExperienceDto>>("api/experience", cancellationToken) ?? [];
+    public async Task<IReadOnlyList<ExperienceDto>> GetExperienceAsync(string languageCode, CancellationToken cancellationToken = default) =>
+        await GetAsync<List<ExperienceDto>>("api/experience", languageCode, cancellationToken) ?? [];
 
     public async Task<ContactResult> SendContactAsync(ContactRequest request, CancellationToken cancellationToken = default)
     {
@@ -37,28 +37,30 @@ public sealed class PortfolioApiClient(HttpClient httpClient, ILogger<PortfolioA
 
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
-                return ContactResult.Failed("Слишком много сообщений подряд. Попробуйте позже или напишите на почту.");
+                return ContactResult.Failed(ContactResultCodes.RateLimited);
             }
 
             logger.LogError("Форма не отправлена, код ответа {StatusCode}", (int)response.StatusCode);
-            return ContactResult.Failed("Не получилось отправить сообщение. Попробуйте ещё раз.");
+            return ContactResult.Failed(ContactResultCodes.Failed);
         }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException)
         {
             logger.LogError(exception, "Сеть недоступна при отправке формы");
-            return ContactResult.Failed("Нет связи с сервером. Проверьте подключение и попробуйте снова.");
+            return ContactResult.Failed(ContactResultCodes.NetworkError);
         }
     }
 
-    private async Task<T?> GetAsync<T>(string path, CancellationToken cancellationToken)
+    private async Task<T?> GetAsync<T>(string path, string languageCode, CancellationToken cancellationToken)
     {
+        var url = $"{path}?lang={Uri.EscapeDataString(Languages.Normalize(languageCode))}";
+
         try
         {
-            return await httpClient.GetFromJsonAsync<T>(path, cancellationToken);
+            return await httpClient.GetFromJsonAsync<T>(url, cancellationToken);
         }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException or NotSupportedException)
         {
-            logger.LogError(exception, "Не удалось загрузить {Path}", path);
+            logger.LogError(exception, "Не удалось загрузить {Path}", url);
             return default;
         }
     }

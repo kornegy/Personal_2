@@ -2,14 +2,17 @@ using Portfolio.Domain.Entities;
 
 namespace Portfolio.Application.Abstractions;
 
-/// <summary>Доступ к содержимому сайта. Реализация живёт в слое Infrastructure.</summary>
+/// <summary>
+/// Доступ к содержимому сайта. Реализация живёт в слое Infrastructure.
+/// Контент хранится по языкам, поэтому код языка обязателен в каждом запросе.
+/// </summary>
 public interface IPortfolioRepository
 {
-    Task<Profile?> GetProfileAsync(CancellationToken cancellationToken = default);
+    Task<Profile?> GetProfileAsync(string languageCode, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<SkillCategory>> GetSkillCategoriesAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<SkillCategory>> GetSkillCategoriesAsync(string languageCode, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Project>> GetProjectsAsync(string languageCode, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<Experience>> GetExperiencesAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Experience>> GetExperiencesAsync(string languageCode, CancellationToken cancellationToken = default);
 }

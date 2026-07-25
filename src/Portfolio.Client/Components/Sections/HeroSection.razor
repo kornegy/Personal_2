@@ -1,3 +1,5 @@
+@inherits LocalizedComponentBase
+
 @* Первый экран: кто я, чем полезен и что сделать дальше. *@
 
 <section class="hero">
@@ -5,7 +7,7 @@
         <div>
             <span class="hero__badge">
                 <span class="dot"></span>
-                Открыт к новым проектам
+                @T.HeroBadge
             </span>
 
             <h1 class="hero__name">@Profile.FullName</h1>
@@ -14,27 +16,30 @@
 
             <div class="hero__actions">
                 <a class="btn-accent" href="#contact">
-                    <i class="bi bi-send"></i> Обсудить проект
+                    <i class="bi bi-send"></i> @T.HeroCtaContact
                 </a>
-                <a class="btn-ghost" href="#projects">Посмотреть работы</a>
+                <a class="btn-ghost" href="#projects">@T.HeroCtaProjects</a>
                 @if (!string.IsNullOrWhiteSpace(Profile.ResumeUrl))
                 {
                     <a class="btn-ghost" href="@Profile.ResumeUrl" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-file-earmark-text"></i> Резюме
+                        <i class="bi bi-file-earmark-text"></i> @T.HeroCtaResume
                     </a>
                 }
             </div>
 
             <div class="hero__meta">
                 <span><i class="bi bi-geo-alt"></i>@Profile.Location</span>
-                <span><i class="bi bi-briefcase"></i>@Profile.YearsOfExperience @YearsWord — коммерческий опыт</span>
+                <span>
+                    <i class="bi bi-briefcase"></i>
+                    @Profile.YearsOfExperience @(T.YearsWord(Profile.YearsOfExperience)) @T.HeroExperienceSuffix
+                </span>
             </div>
         </div>
 
         @if (!string.IsNullOrWhiteSpace(Profile.PhotoUrl))
         {
             <div class="hero__photo">
-                <img src="@Profile.PhotoUrl" alt="Фотография: @Profile.FullName" width="400" height="400" />
+                <img src="@Profile.PhotoUrl" alt="@T.HeroPhotoAlt: @Profile.FullName" width="400" height="400" />
             </div>
         }
     </div>
@@ -42,23 +47,4 @@
 
 @code {
     [Parameter, EditorRequired] public ProfileDto Profile { get; set; } = default!;
-
-    /// <summary>«год / года / лет» — иначе подпись читается неестественно.</summary>
-    private string YearsWord => PluralizeYears(Profile.YearsOfExperience);
-
-    private static string PluralizeYears(int value)
-    {
-        var lastTwo = value % 100;
-        if (lastTwo is >= 11 and <= 14)
-        {
-            return "лет";
-        }
-
-        return (value % 10) switch
-        {
-            1 => "год",
-            2 or 3 or 4 => "года",
-            _ => "лет"
-        };
-    }
 }

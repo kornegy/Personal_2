@@ -1,44 +1,59 @@
-@* Шапка с якорными ссылками. Меню на мобильных открывается без JavaScript — состоянием управляет сам компонент. *@
+@inherits LocalizedComponentBase
+
+@* Шапка с якорными ссылками и переключателем языка.
+   Меню на мобильных открывается без JavaScript — состоянием управляет сам компонент. *@
 
 <header class="site-header">
     <div class="container-narrow site-header__inner">
         <a class="brand" href="#top">
             <span class="brand__mark"><i class="bi bi-code-slash"></i></span>
-            <span>Портфолио</span>
+            <span>@T.BrandText</span>
         </a>
 
-        <nav aria-label="Разделы сайта">
+        <nav aria-label="@T.NavAriaLabel">
             <ul class="nav-links @(_isOpen ? "nav-links--open" : string.Empty)">
-                @foreach (var (href, text) in Links)
-                {
-                    <li><a href="@href" @onclick="Close">@text</a></li>
-                }
-                <li><a class="btn-accent" href="#contact" @onclick="Close">Написать мне</a></li>
+                <li><a href="#about" @onclick="Close">@T.NavAbout</a></li>
+                <li><a href="#skills" @onclick="Close">@T.NavSkills</a></li>
+                <li><a href="#projects" @onclick="Close">@T.NavProjects</a></li>
+                <li><a href="#experience" @onclick="Close">@T.NavExperience</a></li>
+                <li><a class="btn-accent" href="#contact" @onclick="Close">@T.NavContactCta</a></li>
             </ul>
         </nav>
 
-        <button type="button"
-                class="nav-toggle"
-                aria-label="@(_isOpen ? "Закрыть меню" : "Открыть меню")"
-                aria-expanded="@(_isOpen ? "true" : "false")"
-                @onclick="Toggle">
-            <i class="bi @(_isOpen ? "bi-x" : "bi-list")"></i>
-        </button>
+        <div class="header-actions">
+            <div class="lang-switch" role="group" aria-label="@T.LanguageSwitchLabel">
+                @foreach (var languageCode in Languages.All)
+                {
+                    <button type="button"
+                            class="lang-switch__button @(Language.Current == languageCode ? "lang-switch__button--active" : string.Empty)"
+                            aria-pressed="@(Language.Current == languageCode ? "true" : "false")"
+                            @onclick="() => SwitchAsync(languageCode)">
+                        @languageCode.ToUpperInvariant()
+                    </button>
+                }
+            </div>
+
+            <button type="button"
+                    class="nav-toggle"
+                    aria-label="@(_isOpen ? T.MenuClose : T.MenuOpen)"
+                    aria-expanded="@(_isOpen ? "true" : "false")"
+                    @onclick="Toggle">
+                <i class="bi @(_isOpen ? "bi-x" : "bi-list")"></i>
+            </button>
+        </div>
     </div>
 </header>
 
 @code {
-    private static readonly (string Href, string Text)[] Links =
-    [
-        ("#about", "Обо мне"),
-        ("#skills", "Технологии"),
-        ("#projects", "Проекты"),
-        ("#experience", "Опыт")
-    ];
-
     private bool _isOpen;
 
     private void Toggle() => _isOpen = !_isOpen;
 
     private void Close() => _isOpen = false;
+
+    private async Task SwitchAsync(string languageCode)
+    {
+        _isOpen = false;
+        await Language.SetAsync(languageCode);
+    }
 }

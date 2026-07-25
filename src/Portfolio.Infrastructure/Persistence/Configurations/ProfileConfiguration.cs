@@ -11,6 +11,7 @@ internal sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
         builder.ToTable("Profiles");
         builder.HasKey(p => p.Id);
 
+        builder.Property(p => p.LanguageCode).HasMaxLength(2).IsRequired();
         builder.Property(p => p.FullName).HasMaxLength(120).IsRequired();
         builder.Property(p => p.Title).HasMaxLength(160).IsRequired();
         builder.Property(p => p.Headline).HasMaxLength(320).IsRequired();
@@ -20,6 +21,9 @@ internal sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
         builder.Property(p => p.Phone).HasMaxLength(40);
         builder.Property(p => p.PhotoUrl).HasMaxLength(256);
         builder.Property(p => p.ResumeUrl).HasMaxLength(256);
+
+        // На каждый язык допустим ровно один профиль.
+        builder.HasIndex(p => p.LanguageCode).IsUnique();
 
         builder.HasMany(p => p.SocialLinks)
             .WithOne(l => l.Profile!)

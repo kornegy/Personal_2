@@ -51,7 +51,7 @@ internal static class PortfolioMappings
     public static ExperienceDto ToDto(this Experience experience) => new(
         experience.Company,
         experience.Position,
-        PeriodFormatter.Format(experience.StartDate, experience.EndDate),
+        PeriodFormatter.Format(experience.StartDate, experience.EndDate, experience.LanguageCode),
         experience.EndDate is null,
         SplitHighlights(experience.Description));
 

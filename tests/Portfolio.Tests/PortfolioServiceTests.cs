@@ -5,13 +5,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Portfolio.Application.Services;
 using Portfolio.Infrastructure.Persistence;
 using Portfolio.Infrastructure.Repositories;
+using Portfolio.Shared.Contracts;
 using Portfolio.Tests.Common;
 
 namespace Portfolio.Tests;
 
 /// <summary>
-/// Проверка связки «база → репозиторий → сервис → DTO» на настоящей SQLite в памяти:
-/// так тест ловит и ошибки в конфигурации EF, а не только в C#-коде.
+/// Проверка связки «миграции → база → репозиторий → сервис → DTO» на настоящей SQLite в памяти:
+/// так тест ловит и ошибки в миграциях с конфигурацией EF, а не только в C#-коде.
 /// </summary>
 public class PortfolioServiceTests : IAsyncLifetime
 {
@@ -41,9 +42,20 @@ public class PortfolioServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task GetProfileAsync_ВозвращаетЗаполненныйПрофиль()
+    public async Task InitializeAsync_ПрименяетМиграцииИСоздаётТаблицы()
     {
-        var profile = await _service.GetProfileAsync();
+        var applied = await _context.Database.GetAppliedMigrationsAsync();
+
+        applied.Should().NotBeEmpty();
+        (await _context.Database.GetPendingMigrationsAsync()).Should().BeEmpty();
+    }
+
+    [Theory]
+    [InlineData(Languages.Russian)]
+    [InlineData(Languages.English)]
+    public async Task GetProfileAsync_ЕстьПрофильНаКаждомЯзыке(string language)
+    {
+        var profile = await _service.GetProfileAsync(language);
 
         profile.Should().NotBeNull();
         profile!.FullName.Should().NotBeNullOrWhiteSpace();
@@ -53,31 +65,54 @@ public class PortfolioServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task GetSkillsAsync_КатегорииИдутВЗаданномПорядкеИНеПустые()
+    public async Task GetProfileAsync_РусскаяИАнглийскаяВерсииОтличаются()
     {
-        var categories = await _service.GetSkillsAsync();
+        var russian = await _service.GetProfileAsync(Languages.Russian);
+        var english = await _service.GetProfileAsync(Languages.English);
+
+        russian!.Title.Should().NotBe(english!.Title);
+    }
+
+    [Fact]
+    public async Task GetProfileAsync_НеизвестныйЯзык_ВозвращаетВерсиюПоУмолчанию()
+    {
+        var fallback = await _service.GetProfileAsync("zz");
+        var russian = await _service.GetProfileAsync(Languages.Russian);
+
+        fallback!.Title.Should().Be(russian!.Title);
+    }
+
+    [Theory]
+    [InlineData(Languages.Russian)]
+    [InlineData(Languages.English)]
+    public async Task GetSkillsAsync_КатегорииНеПустые(string language)
+    {
+        var categories = await _service.GetSkillsAsync(language);
 
         categories.Should().NotBeEmpty();
         categories.Should().OnlyContain(category => category.Skills.Count > 0);
     }
 
     [Fact]
-    public async Task GetProjectsAsync_УКаждогоПроектаЕстьТехнологии()
+    public async Task GetProjectsAsync_ОдинаковоеЧислоПроектовНаОбоихЯзыках()
     {
-        var projects = await _service.GetProjectsAsync();
+        var russian = await _service.GetProjectsAsync(Languages.Russian);
+        var english = await _service.GetProjectsAsync(Languages.English);
 
-        projects.Should().NotBeEmpty();
-        projects.Should().OnlyContain(project => project.Technologies.Count > 0);
+        russian.Should().NotBeEmpty();
+        english.Should().HaveCount(russian.Count);
+        russian.Should().OnlyContain(project => project.Technologies.Count > 0);
     }
 
     [Fact]
-    public async Task GetExperienceAsync_ТекущееМестоОтмеченоИПериодОтформатирован()
+    public async Task GetExperienceAsync_ПериодПереводитсяВместеСЯзыком()
     {
-        var experience = await _service.GetExperienceAsync();
+        var russian = await _service.GetExperienceAsync(Languages.Russian);
+        var english = await _service.GetExperienceAsync(Languages.English);
 
-        experience.Should().NotBeEmpty();
-        experience.Should().Contain(item => item.IsCurrent);
-        experience.Should().OnlyContain(item => item.Period.Contains('—'));
+        russian.Should().Contain(item => item.IsCurrent);
+        russian.Should().Contain(item => item.Period.Contains("настоящее время"));
+        english.Should().Contain(item => item.Period.Contains("Present"));
     }
 
     [Fact]
@@ -85,6 +120,6 @@ public class PortfolioServiceTests : IAsyncLifetime
     {
         await new DatabaseInitializer(_context, NullLogger<DatabaseInitializer>.Instance).InitializeAsync();
 
-        (await _context.Profiles.CountAsync()).Should().Be(1);
+        (await _context.Profiles.CountAsync()).Should().Be(Languages.All.Count);
     }
 }

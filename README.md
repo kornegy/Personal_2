@@ -1,7 +1,7 @@
 # Сайт-визитка Front-End разработчика
 
 Полноценное фул-стек приложение: **Blazor WebAssembly** на клиенте, **ASP.NET Core** + **SQLite** на сервере.
-Весь контент (обо мне, технологии, проекты, опыт) хранится в базе, а не зашит в разметку, — сайт правится в одном месте.
+Сайт двуязычный (русский и английский), весь контент хранится в базе, а не зашит в разметку.
 
 ---
 
@@ -11,7 +11,7 @@
 |------|------------|
 | Front-end | Blazor WebAssembly, Bootstrap 5, HTML, CSS |
 | Back-end | ASP.NET Core 8 Minimal API, C# |
-| База данных | SQLite + Entity Framework Core 8 |
+| База данных | SQLite + Entity Framework Core 8 (миграции) |
 | Тесты | xUnit, FluentAssertions |
 
 ---
@@ -22,11 +22,11 @@
 Portfolio.sln
 ├── src
 │   ├── Portfolio.Domain          — сущности. Ни от чего не зависит
-│   ├── Portfolio.Shared          — контракты API (DTO) + правила валидации
+│   ├── Portfolio.Shared          — контракты API (DTO), список языков, правила валидации
 │   ├── Portfolio.Application     — бизнес-логика и интерфейсы хранилищ
-│   ├── Portfolio.Infrastructure  — EF Core, SQLite, репозитории, начальные данные
+│   ├── Portfolio.Infrastructure  — EF Core, SQLite, миграции, репозитории, контент
 │   ├── Portfolio.Api             — HTTP-эндпоинты, защита, хостинг клиента
-│   └── Portfolio.Client          — Blazor WASM: страницы и компоненты
+│   └── Portfolio.Client          — Blazor WASM: страницы, компоненты, переводы интерфейса
 └── tests
     └── Portfolio.Tests           — тесты логики и связки с базой
 ```
@@ -49,7 +49,10 @@ Api ────┘                    ▲
 
 | Файл | Зачем нужен |
 |------|-------------|
-| `src/Portfolio.Infrastructure/Persistence/PortfolioSeedData.cs` | **весь текст сайта** |
+| `src/Portfolio.Infrastructure/Persistence/Seed/RussianContent.cs` | **весь текст сайта, русская версия** |
+| `src/Portfolio.Infrastructure/Persistence/Seed/EnglishContent.cs` | **весь текст сайта, английская версия** |
+| `src/Portfolio.Client/Localization/RussianStrings.cs` | подписи интерфейса (кнопки, заголовки секций) |
+| `src/Portfolio.Client/Localization/EnglishStrings.cs` | то же на английском |
 | `src/Portfolio.Client/wwwroot/css/app.css` | дизайн-система: цвета, отступы, компоненты |
 | `src/Portfolio.Api/Middleware/SecurityHeadersMiddleware.cs` | заголовки безопасности |
 | `src/Portfolio.Api/Extensions/RateLimitingExtensions.cs` | лимиты частоты запросов |
@@ -65,8 +68,8 @@ dotnet restore Portfolio.sln
 dotnet run --project src/Portfolio.Api
 ```
 
-Откройте `https://localhost:7150`. База `portfolio.db` создастся сама при первом запуске
-и наполнится данными из `PortfolioSeedData.cs`.
+Откройте `https://localhost:7150`. При первом запуске приложение само применит миграции
+и заполнит базу `portfolio.db` содержимым обоих языков.
 
 Тесты:
 
@@ -76,11 +79,36 @@ dotnet test Portfolio.sln
 
 ---
 
+## Две языковые версии
+
+Язык определяется так: сохранённый выбор в браузере → язык браузера → русский.
+Переключатель **RU / EN** стоит в шапке, выбор запоминается в `localStorage`.
+
+Контент и подписи разделены:
+
+* **контент** (обо мне, проекты, опыт) лежит в базе, у каждой записи есть `LanguageCode`;
+  API отдаёт нужную версию по параметру `?lang=`;
+* **подписи интерфейса** (кнопки, заголовки секций, тексты ошибок) лежат в классах
+  `RussianStrings` / `EnglishStrings`.
+
+Класс `UiStrings` объявляет все подписи как `required`, поэтому забыть перевести новую
+строку невозможно — проект просто не соберётся.
+
+### Добавить третий язык
+
+1. Дописать код языка в `Portfolio.Shared/Contracts/Languages.cs`.
+2. Добавить пакет контента рядом с `RussianContent.cs` и зарегистрировать его в `PortfolioSeedData`.
+3. Добавить набор подписей рядом с `RussianStrings.cs` и вернуть его из `UiStringsCatalog`.
+
+Ни один компонент интерфейса при этом не меняется.
+
+---
+
 ## Как поменять содержимое под себя
 
-1. Откройте `src/Portfolio.Infrastructure/Persistence/PortfolioSeedData.cs` и впишите свои данные.
+1. Откройте `Persistence/Seed/RussianContent.cs` и `EnglishContent.cs`, впишите свои данные.
 2. Удалите файл `src/Portfolio.Api/portfolio.db`.
-3. Запустите приложение — база пересоздастся с новым текстом.
+3. Запустите приложение — база создастся заново с новым текстом.
 
 Фото и резюме кладутся в `src/Portfolio.Client/wwwroot/`:
 
@@ -91,17 +119,53 @@ dotnet test Portfolio.sln
 
 ---
 
+## Миграции базы данных
+
+Схема базы описана миграциями EF Core в `src/Portfolio.Infrastructure/Migrations`.
+При старте приложение применяет все непринятые миграции автоматически.
+
+Если поменяли сущности — создайте новую миграцию:
+
+```bash
+dotnet tool install --global dotnet-ef          # один раз
+
+dotnet ef migrations add ИмяМиграции \
+  --project src/Portfolio.Infrastructure \
+  --startup-project src/Portfolio.Api
+
+dotnet ef database update \
+  --project src/Portfolio.Infrastructure \
+  --startup-project src/Portfolio.Api
+```
+
+Проверить, что снимок модели совпадает с сущностями:
+
+```bash
+dotnet ef migrations has-pending-model-changes \
+  --project src/Portfolio.Infrastructure \
+  --startup-project src/Portfolio.Api
+```
+
+Откатить последнюю ещё не применённую миграцию — `dotnet ef migrations remove` с теми же ключами.
+
+---
+
 ## API
 
 | Метод | Адрес | Что делает |
 |-------|-------|------------|
-| GET | `/api/profile` | данные первого экрана и блока «Обо мне» |
-| GET | `/api/skills` | технологии по категориям |
-| GET | `/api/projects` | проекты |
-| GET | `/api/experience` | опыт работы |
+| GET | `/api/profile?lang=ru` | данные первого экрана и блока «Обо мне» |
+| GET | `/api/skills?lang=ru` | технологии по категориям |
+| GET | `/api/projects?lang=ru` | проекты |
+| GET | `/api/experience?lang=ru` | опыт работы |
 | POST | `/api/contact` | приём сообщения из формы |
 
-GET-ответы кэшируются на 10 минут, поэтому база не нагружается при наплыве посетителей.
+Параметр `lang` принимает `ru` и `en`; любое другое значение молча заменяется на русский.
+GET-ответы кэшируются на 10 минут **отдельно по каждому языку**, поэтому база не нагружается
+при наплыве посетителей.
+
+`POST /api/contact` возвращает код исхода (`accepted`, `rate_limited`, `failed`), а не готовый
+текст: текст подставляет клиент на нужном языке.
 
 ---
 
@@ -138,9 +202,8 @@ export Contact__IpHashSalt="строка-минимум-16-символов"
 
 ## Что можно добавить дальше
 
+* отправку письма на почту при новом сообщении из формы;
 * админ-панель с авторизацией, чтобы править контент без пересборки;
-* отправку писем на почту при новом сообщении из формы;
-* переход с `EnsureCreated` на миграции EF Core, когда схема начнёт меняться:
-  `dotnet ef migrations add Initial --project src/Portfolio.Infrastructure --startup-project src/Portfolio.Api`;
 * размещение Bootstrap и шрифта на своём домене — тогда `Content-Security-Policy` сократится до `'self'`;
-* английскую версию сайта для зарубежных заказчиков.
+* отдельные адреса для языковых версий (`/en/...`) — это лучше индексируется поисковиками,
+  чем переключение через `localStorage`.

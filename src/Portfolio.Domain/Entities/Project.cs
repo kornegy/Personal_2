@@ -5,6 +5,9 @@ public class Project
 {
     public int Id { get; set; }
 
+    /// <summary>Код языка: «ru» или «en».</summary>
+    public string LanguageCode { get; set; } = string.Empty;
+
     public string Title { get; set; } = string.Empty;
 
     /// <summary>Одна строка для карточки.</summary>

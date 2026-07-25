@@ -1,17 +1,19 @@
 using Portfolio.Domain.Entities;
+using Portfolio.Shared.Contracts;
 
-namespace Portfolio.Infrastructure.Persistence;
+namespace Portfolio.Infrastructure.Persistence.Seed;
 
 /// <summary>
-/// ЕДИНСТВЕННОЕ МЕСТО, ГДЕ ЛЕЖИТ КОНТЕНТ САЙТА.
+/// РУССКАЯ ВЕРСИЯ САЙТА — весь текст лежит здесь.
 ///
-/// Чтобы обновить сайт под своё резюме, правьте только этот файл: код трогать не нужно.
-/// После изменений удалите файл базы (portfolio.db) и перезапустите приложение —
-/// база пересоздастся с новыми данными.
+/// Чтобы обновить сайт под своё резюме, правьте только этот файл (и его английскую пару).
+/// Код языка проставляется автоматически, указывать его в сущностях не нужно.
 /// </summary>
-internal static class PortfolioSeedData
+internal sealed class RussianContent : IContentPack
 {
-    public static Profile CreateProfile() => new()
+    public string LanguageCode => Languages.Russian;
+
+    public Profile CreateProfile() => new()
     {
         FullName = "Назар", // укажите имя и фамилию как в резюме
         Title = "Front-End React разработчик",
@@ -37,7 +39,7 @@ internal static class PortfolioSeedData
         ]
     };
 
-    public static IReadOnlyList<SkillCategory> CreateSkillCategories() =>
+    public IReadOnlyList<SkillCategory> CreateSkillCategories() =>
     [
         new SkillCategory
         {
@@ -96,7 +98,7 @@ internal static class PortfolioSeedData
         }
     ];
 
-    public static IReadOnlyList<Project> CreateProjects() =>
+    public IReadOnlyList<Project> CreateProjects() =>
     [
         new Project
         {
@@ -160,7 +162,7 @@ internal static class PortfolioSeedData
         }
     ];
 
-    public static IReadOnlyList<Experience> CreateExperiences() =>
+    public IReadOnlyList<Experience> CreateExperiences() =>
     [
         new Experience
         {

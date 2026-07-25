@@ -5,6 +5,9 @@ public class Experience
 {
     public int Id { get; set; }
 
+    /// <summary>Код языка: «ru» или «en».</summary>
+    public string LanguageCode { get; set; } = string.Empty;
+
     public string Company { get; set; } = string.Empty;
 
     public string Position { get; set; } = string.Empty;

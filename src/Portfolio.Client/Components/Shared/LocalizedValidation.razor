@@ -1,0 +1,43 @@
+@inherits LocalizedComponentBase
+@typeparam TValue
+
+@* Показывает ошибку валидации поля на выбранном языке.
+   Атрибуты в ContactRequest хранят ключ, а текст подставляется отсюда — так правила
+   валидации остаются в одном месте и работают одинаково на клиенте и на сервере. *@
+
+@foreach (var message in Messages)
+{
+    <span class="validation-message">@message</span>
+}
+
+@code {
+    [CascadingParameter] private EditContext CurrentEditContext { get; set; } = default!;
+
+    /// <summary>Поле формы, например <c>() => model.Email</c>.</summary>
+    [Parameter, EditorRequired] public Expression<Func<TValue>> For { get; set; } = default!;
+
+    private FieldIdentifier _field;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        CurrentEditContext.OnValidationStateChanged += HandleValidationStateChanged;
+    }
+
+    protected override void OnParametersSet() => _field = FieldIdentifier.Create(For);
+
+    private IEnumerable<string> Messages =>
+        CurrentEditContext.GetValidationMessages(_field).Select(Translate);
+
+    private string Translate(string key) =>
+        T.Validation.TryGetValue(key, out var text) ? text : key;
+
+    private void HandleValidationStateChanged(object? sender, ValidationStateChangedEventArgs args) =>
+        StateHasChanged();
+
+    public override void Dispose()
+    {
+        CurrentEditContext.OnValidationStateChanged -= HandleValidationStateChanged;
+        base.Dispose();
+    }
+}

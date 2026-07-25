@@ -1,20 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Portfolio.Infrastructure.Persistence.Seed;
 
 namespace Portfolio.Infrastructure.Persistence;
 
 /// <summary>
-/// Создаёт базу при первом запуске и наполняет её содержимым из <see cref="PortfolioSeedData"/>.
+/// Приводит базу к актуальной схеме через миграции EF Core и наполняет её содержимым.
 /// Данные добавляются только в пустую базу, поэтому повторные запуски ничего не дублируют.
 /// </summary>
 public sealed class DatabaseInitializer(PortfolioDbContext context, ILogger<DatabaseInitializer> logger)
 {
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
-        var created = await context.Database.EnsureCreatedAsync(cancellationToken);
-        if (created)
+        var pending = (await context.Database.GetPendingMigrationsAsync(cancellationToken)).ToList();
+        if (pending.Count > 0)
         {
-            logger.LogInformation("База данных создана");
+            logger.LogInformation("Применяем миграции: {Migrations}", string.Join(", ", pending));
+            await context.Database.MigrateAsync(cancellationToken);
         }
 
         if (await context.Profiles.AnyAsync(cancellationToken))
@@ -24,7 +26,7 @@ public sealed class DatabaseInitializer(PortfolioDbContext context, ILogger<Data
 
         logger.LogInformation("Заполнение базы начальными данными");
 
-        context.Profiles.Add(PortfolioSeedData.CreateProfile());
+        context.Profiles.AddRange(PortfolioSeedData.CreateProfiles());
         context.SkillCategories.AddRange(PortfolioSeedData.CreateSkillCategories());
         context.Projects.AddRange(PortfolioSeedData.CreateProjects());
         context.Experiences.AddRange(PortfolioSeedData.CreateExperiences());

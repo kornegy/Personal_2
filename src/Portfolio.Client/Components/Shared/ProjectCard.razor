@@ -1,10 +1,12 @@
+@inherits LocalizedComponentBase
+
 @* Карточка одного проекта. *@
 
 <article class="project-card">
     <div class="project-card__cover">
         @if (!string.IsNullOrWhiteSpace(Project.ImageUrl))
         {
-            <img src="@Project.ImageUrl" alt="Превью проекта: @Project.Title" loading="lazy" />
+            <img src="@Project.ImageUrl" alt="@T.ProjectPreviewAlt: @Project.Title" loading="lazy" />
         }
         else
         {
@@ -34,13 +36,13 @@
                 @if (!string.IsNullOrWhiteSpace(Project.DemoUrl))
                 {
                     <a href="@Project.DemoUrl" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-box-arrow-up-right"></i> Демо
+                        <i class="bi bi-box-arrow-up-right"></i> @T.ProjectLinkDemo
                     </a>
                 }
                 @if (!string.IsNullOrWhiteSpace(Project.SourceUrl))
                 {
                     <a href="@Project.SourceUrl" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-github"></i> Код
+                        <i class="bi bi-github"></i> @T.ProjectLinkSource
                     </a>
                 }
             </div>

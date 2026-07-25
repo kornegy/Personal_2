@@ -1,3 +1,5 @@
+using Portfolio.Shared.Contracts;
+
 namespace Portfolio.Application.Common;
 
 /// <summary>
@@ -6,25 +8,39 @@ namespace Portfolio.Application.Common;
 /// </summary>
 public static class PeriodFormatter
 {
-    private static readonly string[] Months =
+    private static readonly string[] RussianMonths =
     [
         "январь", "февраль", "март", "апрель", "май", "июнь",
         "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"
     ];
 
-    private const string Present = "настоящее время";
+    private static readonly string[] EnglishMonths =
+    [
+        "january", "february", "march", "april", "may", "june",
+        "july", "august", "september", "october", "november", "december"
+    ];
 
-    /// <summary>Возвращает строку вида «Март 2022 — настоящее время».</summary>
-    public static string Format(DateOnly start, DateOnly? end)
+    private const string RussianPresent = "настоящее время";
+
+    private const string EnglishPresent = "Present";
+
+    /// <summary>Возвращает строку вида «Март 2022 — настоящее время» или «March 2022 — Present».</summary>
+    public static string Format(DateOnly start, DateOnly? end, string languageCode)
     {
-        var from = FormatSingle(start);
-        var to = end.HasValue ? FormatSingle(end.Value) : Present;
+        var isRussian = languageCode == Languages.Russian;
+        var months = isRussian ? RussianMonths : EnglishMonths;
+
+        var from = FormatSingle(start, months);
+        var to = end.HasValue
+            ? FormatSingle(end.Value, months)
+            : isRussian ? RussianPresent : EnglishPresent;
+
         return $"{from} — {to}";
     }
 
-    private static string FormatSingle(DateOnly date)
+    private static string FormatSingle(DateOnly date, string[] months)
     {
-        var month = Months[date.Month - 1];
+        var month = months[date.Month - 1];
         return $"{char.ToUpperInvariant(month[0])}{month[1..]} {date.Year}";
     }
 

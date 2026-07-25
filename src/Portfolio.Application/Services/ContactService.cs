@@ -39,7 +39,7 @@ internal sealed class ContactService(
             logger.LogWarning("Сообщение отклонено: превышен лимит {Limit} сообщений за {Window} мин.",
                 _options.MaxMessagesPerWindow, _options.FloodWindowMinutes);
 
-            return ContactResult.Failed("Вы отправили слишком много сообщений. Попробуйте позже или напишите на почту.");
+            return ContactResult.Failed(ContactResultCodes.RateLimited);
         }
 
         var message = new ContactMessage

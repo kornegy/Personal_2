@@ -1,14 +1,14 @@
+@inherits LocalizedComponentBase
+
 @* Технологии, сгруппированные по назначению. *@
 
 <section id="skills" class="section">
     <div class="container-narrow">
-        <SectionHeader Label="Технологии"
-                       Title="С чем я работаю"
-                       Subtitle="Инструменты, которые использую каждый день и готов применить на вашем проекте." />
+        <SectionHeader Label="@T.SkillsLabel" Title="@T.SkillsTitle" Subtitle="@T.SkillsSubtitle" />
 
         @if (Categories.Count == 0)
         {
-            <LoadingBlock Text="Список технологий недоступен" />
+            <LoadingBlock Text="@T.SkillsUnavailable" />
         }
         else
         {

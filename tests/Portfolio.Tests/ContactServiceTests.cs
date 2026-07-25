@@ -41,6 +41,7 @@ public class ContactServiceTests
         var result = await service.SubmitAsync(ValidRequest(), "203.0.113.10");
 
         result.Success.Should().BeTrue();
+        result.Code.Should().Be(ContactResultCodes.Accepted);
         repository.Messages.Should().ContainSingle();
         repository.Messages[0].SenderName.Should().Be("Иван");
     }
@@ -84,6 +85,7 @@ public class ContactServiceTests
         var third = await service.SubmitAsync(ValidRequest(), "203.0.113.10");
 
         third.Success.Should().BeFalse();
+        third.Code.Should().Be(ContactResultCodes.RateLimited);
         repository.Messages.Should().HaveCount(2);
     }
 

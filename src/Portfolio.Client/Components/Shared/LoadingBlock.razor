@@ -1,8 +1,11 @@
+@inherits LocalizedComponentBase
+
 <div class="loading-block" role="status" aria-live="polite">
     <span class="spinner"></span>
-    <span>@Text</span>
+    <span>@(Text ?? T.Loading)</span>
 </div>
 
 @code {
-    [Parameter] public string Text { get; set; } = "Загружаем данные…";
+    /// <summary>Если не задан, показывается общая подпись «Загружаем данные…».</summary>
+    [Parameter] public string? Text { get; set; }
 }

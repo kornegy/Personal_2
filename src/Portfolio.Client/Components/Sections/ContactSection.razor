@@ -1,11 +1,12 @@
-@* Контакты и форма связи. Валидация описана в Portfolio.Shared и дублируется на сервере. *@
+@inherits LocalizedComponentBase
 @inject IPortfolioApi Api
+
+@* Контакты и форма связи. Правила валидации описаны в Portfolio.Shared
+   и проверяются ещё раз на сервере. *@
 
 <section id="contact" class="section">
     <div class="container-narrow">
-        <SectionHeader Label="Контакты"
-                       Title="Давайте обсудим задачу"
-                       Subtitle="Напишите пару слов о проекте — отвечу в течение рабочего дня." />
+        <SectionHeader Label="@T.ContactLabel" Title="@T.ContactTitle" Subtitle="@T.ContactSubtitle" />
 
         <div class="contact-grid">
             <div>
@@ -51,32 +52,32 @@
                     <DataAnnotationsValidator />
 
                     <div class="field">
-                        <label for="contact-name">Имя</label>
-                        <InputText id="contact-name" @bind-Value="_model.Name" placeholder="Как к вам обращаться" autocomplete="name" />
-                        <ValidationMessage For="() => _model.Name" />
+                        <label for="contact-name">@T.ContactFieldName</label>
+                        <InputText id="contact-name" @bind-Value="_model.Name" placeholder="@T.ContactPlaceholderName" autocomplete="name" />
+                        <LocalizedValidation TValue="string" For="() => _model.Name" />
                     </div>
 
                     <div class="field">
-                        <label for="contact-email">Email</label>
+                        <label for="contact-email">@T.ContactFieldEmail</label>
                         <InputText id="contact-email" type="email" @bind-Value="_model.Email" placeholder="you@@example.com" autocomplete="email" />
-                        <ValidationMessage For="() => _model.Email" />
+                        <LocalizedValidation TValue="string" For="() => _model.Email" />
                     </div>
 
                     <div class="field">
-                        <label for="contact-subject">Тема</label>
-                        <InputText id="contact-subject" @bind-Value="_model.Subject" placeholder="Например: лендинг для студии" />
-                        <ValidationMessage For="() => _model.Subject" />
+                        <label for="contact-subject">@T.ContactFieldSubject</label>
+                        <InputText id="contact-subject" @bind-Value="_model.Subject" placeholder="@T.ContactPlaceholderSubject" />
+                        <LocalizedValidation TValue="string" For="() => _model.Subject" />
                     </div>
 
                     <div class="field">
-                        <label for="contact-message">Сообщение</label>
-                        <InputTextArea id="contact-message" @bind-Value="_model.Message" placeholder="Опишите задачу, сроки и бюджет" />
-                        <ValidationMessage For="() => _model.Message" />
+                        <label for="contact-message">@T.ContactFieldMessage</label>
+                        <InputTextArea id="contact-message" @bind-Value="_model.Message" placeholder="@T.ContactPlaceholderMessage" />
+                        <LocalizedValidation TValue="string" For="() => _model.Message" />
                     </div>
 
                     @* Ловушка для ботов: поле скрыто и недоступно с клавиатуры. *@
                     <div class="honeypot" aria-hidden="true">
-                        <label for="contact-website">Не заполняйте это поле</label>
+                        <label for="contact-website">@T.ContactHoneypotLabel</label>
                         <InputText id="contact-website" @bind-Value="_model.Website" tabindex="-1" autocomplete="off" />
                     </div>
 
@@ -84,12 +85,12 @@
                         @if (_isSending)
                         {
                             <span class="spinner"></span>
-                            <span>Отправляем…</span>
+                            <span>@T.ContactSending</span>
                         }
                         else
                         {
                             <i class="bi bi-send"></i>
-                            <span>Отправить сообщение</span>
+                            <span>@T.ContactSubmit</span>
                         }
                     </button>
                 </EditForm>
@@ -98,7 +99,7 @@
                 {
                     <div class="form-status @(_result.Success ? "form-status--ok" : "form-status--error")" role="status">
                         <i class="bi @(_result.Success ? "bi-check-circle" : "bi-exclamation-circle")"></i>
-                        <span>@_result.Message</span>
+                        <span>@StatusText</span>
                     </div>
                 }
             </div>
@@ -112,6 +113,12 @@
     private ContactRequest _model = new();
     private ContactResult? _result;
     private bool _isSending;
+
+    /// <summary>Сервер возвращает код ответа, текст подбираем по текущему языку.</summary>
+    private string StatusText =>
+        _result is not null && T.ContactStatus.TryGetValue(_result.Code, out var text)
+            ? text
+            : string.Empty;
 
     private async Task SubmitAsync()
     {
