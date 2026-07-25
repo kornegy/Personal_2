@@ -1,28 +1,33 @@
 @inherits LocalizedComponentBase
 
-@* Карточка одного проекта. *@
+@* Карточка проекта: тёмная плитка на светлой секции.
+   При наведении превью подъезжает, метаданные подтягиваются,
+   в углу проявляется круглая кнопка со стрелкой. *@
 
 <article class="project-card reveal">
-    @if (!string.IsNullOrWhiteSpace(Project.ImageUrl))
-    {
-        <div class="project-card__cover">
+    <div class="project-card__cover">
+        @if (!string.IsNullOrWhiteSpace(Project.ImageUrl))
+        {
             <img src="@Project.ImageUrl" alt="@T.ProjectPreviewAlt: @Project.Title" loading="lazy" />
-        </div>
-    }
-    else
-    {
-        <div class="project-card__cover project-card__cover--placeholder">
-            <i class="bi bi-window-stack" aria-hidden="true"></i>
-        </div>
-    }
+        }
+
+        @if (PrimaryLink is not null)
+        {
+            <span class="project-card__action" aria-hidden="true">
+                <i class="bi bi-arrow-up-right"></i>
+            </span>
+        }
+    </div>
 
     <div class="project-card__body">
-        <div class="project-card__head">
-            <h3 class="project-card__title">@Project.Title</h3>
+        <h3 class="project-card__title">@Project.Title</h3>
+
+        <div class="project-card__meta">
             @if (Project.Year is not null)
             {
-                <span class="project-card__year">@Project.Year</span>
+                <span class="label-mono">@Project.Year</span>
             }
+            <span class="label-mono">@Project.Technologies.Count @T.ProjectTechCountLabel</span>
         </div>
 
         <p class="project-card__summary">@Project.Summary</p>
@@ -31,24 +36,20 @@
         <ul class="chips">
             @foreach (var technology in Project.Technologies)
             {
-                <li class="chip chip--accent">@technology</li>
+                <li class="chip">@technology</li>
             }
         </ul>
 
-        @if (HasLinks)
+        @if (PrimaryLink is not null)
         {
             <div class="project-card__links">
                 @if (!string.IsNullOrWhiteSpace(Project.DemoUrl))
                 {
-                    <a href="@Project.DemoUrl" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-box-arrow-up-right"></i> @T.ProjectLinkDemo
-                    </a>
+                    <a href="@Project.DemoUrl" target="_blank" rel="noopener noreferrer">@T.ProjectLinkDemo</a>
                 }
                 @if (!string.IsNullOrWhiteSpace(Project.SourceUrl))
                 {
-                    <a href="@Project.SourceUrl" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-github"></i> @T.ProjectLinkSource
-                    </a>
+                    <a href="@Project.SourceUrl" target="_blank" rel="noopener noreferrer">@T.ProjectLinkSource</a>
                 }
             </div>
         }
@@ -58,6 +59,7 @@
 @code {
     [Parameter, EditorRequired] public ProjectDto Project { get; set; } = default!;
 
-    private bool HasLinks =>
-        !string.IsNullOrWhiteSpace(Project.DemoUrl) || !string.IsNullOrWhiteSpace(Project.SourceUrl);
+    private string? PrimaryLink =>
+        !string.IsNullOrWhiteSpace(Project.DemoUrl) ? Project.DemoUrl :
+        !string.IsNullOrWhiteSpace(Project.SourceUrl) ? Project.SourceUrl : null;
 }

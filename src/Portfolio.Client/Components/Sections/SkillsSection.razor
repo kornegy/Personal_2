@@ -1,8 +1,8 @@
 @inherits LocalizedComponentBase
 
-@* Технологии, сгруппированные по назначению. *@
+@* Технологии: строки с волосяными линиями, без плашек и скруглений. *@
 
-<section id="skills" class="section">
+<section id="skills" class="section section--black">
     <div class="container-narrow">
         <SectionHeader Label="@T.SkillsLabel" Title="@T.SkillsTitle" Subtitle="@T.SkillsSubtitle" />
 
@@ -12,23 +12,20 @@
         }
         else
         {
-            <div class="skills-grid">
+            <ul class="skills-list">
                 @foreach (var category in Categories)
                 {
-                    <article class="skill-card reveal">
-                        <div class="skill-card__head">
-                            <span class="skill-card__icon"><i class="bi bi-@category.Icon"></i></span>
-                            <h3 class="skill-card__title">@category.Name</h3>
-                        </div>
+                    <li class="skill-row reveal">
+                        <h3 class="skill-row__name">@category.Name</h3>
                         <ul class="chips">
                             @foreach (var skill in category.Skills)
                             {
                                 <li class="chip">@skill</li>
                             }
                         </ul>
-                    </article>
+                    </li>
                 }
-            </div>
+            </ul>
         }
     </div>
 </section>

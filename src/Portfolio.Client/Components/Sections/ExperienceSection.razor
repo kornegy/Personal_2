@@ -1,8 +1,8 @@
 @inherits LocalizedComponentBase
 
-@* Таймлайн опыта: где работал и что делал. *@
+@* Опыт: две колонки — период слева, содержание справа. *@
 
-<section id="experience" class="section">
+<section id="experience" class="section section--black">
     <div class="container-narrow">
         <SectionHeader Label="@T.ExperienceLabel" Title="@T.ExperienceTitle" />
 
@@ -15,17 +15,20 @@
             <ol class="timeline">
                 @foreach (var item in Items)
                 {
-                    <li class="timeline__item reveal @(item.IsCurrent ? "timeline__item--current" : string.Empty)">
+                    <li class="timeline__item reveal">
                         <div class="timeline__period">@item.Period</div>
-                        <h3 class="timeline__position">@item.Position</h3>
-                        <div class="timeline__company">@item.Company</div>
 
-                        <ul class="timeline__highlights">
-                            @foreach (var highlight in item.Highlights)
-                            {
-                                <li>@highlight</li>
-                            }
-                        </ul>
+                        <div>
+                            <h3 class="timeline__position">@item.Position</h3>
+                            <div class="timeline__company">@item.Company</div>
+
+                            <ul class="timeline__highlights">
+                                @foreach (var highlight in item.Highlights)
+                                {
+                                    <li>@highlight</li>
+                                }
+                            </ul>
+                        </div>
                     </li>
                 }
             </ol>

@@ -46,6 +46,7 @@ internal static class UkrainianStrings
         ProjectLinkDemo = "Демо",
         ProjectLinkSource = "Код",
         ProjectPreviewAlt = "Прев'ю проєкту",
+        ProjectTechCountLabel = "технологій",
 
         ExperienceLabel = "Досвід",
         ExperienceTitle = "Де і над чим працював",
@@ -53,6 +54,10 @@ internal static class UkrainianStrings
 
         ContactLabel = "Контакти",
         ContactTitle = "Обговорімо завдання",
+        ContactStartProject = "Розпочати проєкт",
+        ContactPhoneLabel = "Телефон",
+        ContactLocationLabel = "Локація",
+        ContactRights = "Усі права захищені",
         ContactSubtitle = "Напишіть кілька слів про проєкт — відповім протягом робочого дня.",
         ContactFieldName = "Ім'я",
         ContactFieldEmail = "Email",

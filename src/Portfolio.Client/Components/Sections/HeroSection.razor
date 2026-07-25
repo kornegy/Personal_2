@@ -1,16 +1,28 @@
 @inherits LocalizedComponentBase
 
-@* Первый экран: всё по центру, крупное имя, фото — отдельным объектом под текстом. *@
+@* Первый экран во весь экран. Задник приближается при прокрутке,
+   имя одновременно немного отдаляется — эффект смены фокуса камеры. *@
 
 <section class="hero">
-    <div class="container-narrow hero__inner">
-        <span class="hero__badge">
-            <span class="dot"></span>
-            @T.HeroBadge
-        </span>
+    @if (string.IsNullOrWhiteSpace(Profile.PhotoUrl))
+    {
+        <div class="hero__bg" data-noir-bg aria-hidden="true"></div>
+    }
+    else
+    {
+        <div class="hero__bg hero__bg--photo" data-noir-bg aria-hidden="true">
+            <img src="@Profile.PhotoUrl" alt="" />
+        </div>
+    }
 
-        <h1 class="hero__name">@Profile.FullName</h1>
-        <p class="hero__title">@Profile.Title</p>
+    <div class="container-narrow hero__inner">
+        <span class="label-mono hero__eyebrow">@T.HeroBadge</span>
+
+        <div class="hero__title-wrap" data-noir-title>
+            <h1 class="hero__name">@Profile.FullName</h1>
+            <span class="hero__role">@Profile.Title</span>
+        </div>
+
         <p class="hero__headline">@Profile.Headline</p>
 
         <div class="hero__actions">
@@ -25,19 +37,11 @@
         </div>
 
         <div class="hero__meta">
-            <span><i class="bi bi-geo-alt"></i>@Profile.Location</span>
-            <span>
-                <i class="bi bi-briefcase"></i>
+            <span class="label-mono">@Profile.Location</span>
+            <span class="label-mono">
                 @Profile.YearsOfExperience @(T.YearsWord(Profile.YearsOfExperience)) @T.HeroExperienceSuffix
             </span>
         </div>
-
-        @if (!string.IsNullOrWhiteSpace(Profile.PhotoUrl))
-        {
-            <div class="hero__photo reveal">
-                <img src="@Profile.PhotoUrl" alt="@T.HeroPhotoAlt: @Profile.FullName" width="400" height="400" />
-            </div>
-        }
     </div>
 </section>
 

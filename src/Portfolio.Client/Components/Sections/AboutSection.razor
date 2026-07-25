@@ -1,17 +1,24 @@
 @inherits LocalizedComponentBase
 
-@* Короткий рассказ о себе и цифры, которые подтверждают слова. *@
+@* Манифест: одно крупное утверждение, под ним подробности и цифры. *@
 
-<section id="about" class="section">
-    <div class="container-narrow">
-        <SectionHeader Label="@T.AboutLabel" Title="@T.AboutTitle" />
+<section id="about" class="section section--zinc manifesto">
+    <div class="container-narrow manifesto__inner">
+        <span class="label-mono reveal">@T.AboutLabel</span>
 
-        <div class="about__text reveal">
-            @foreach (var paragraph in Paragraphs)
-            {
-                <p class="text-muted-soft">@paragraph</p>
-            }
-        </div>
+        <p class="manifesto__lead reveal">@Lead</p>
+
+        @if (Rest.Count > 0)
+        {
+            <div class="manifesto__body reveal">
+                @foreach (var paragraph in Rest)
+                {
+                    <p>@paragraph</p>
+                }
+            </div>
+        }
+
+        <div class="rule manifesto__rule reveal"></div>
 
         <div class="about__stats">
             <div class="stat-card reveal">
@@ -37,7 +44,11 @@
 
     [Parameter] public int TechnologyCount { get; set; }
 
-    /// <summary>Текст «Обо мне» хранится строками — каждая становится абзацем.</summary>
-    private IEnumerable<string> Paragraphs =>
+    /// <summary>Текст «Обо мне» хранится строками: первая становится манифестом.</summary>
+    private IReadOnlyList<string> Paragraphs =>
         Profile.About.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    private string Lead => Paragraphs.Count > 0 ? Paragraphs[0] : string.Empty;
+
+    private IReadOnlyList<string> Rest => Paragraphs.Skip(1).ToList();
 }

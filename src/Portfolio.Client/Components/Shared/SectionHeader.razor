@@ -1,8 +1,8 @@
-@* Единая шапка секции: подпись, заголовок и пояснение. Выравнивание по центру. *@
+@* Шапка секции: моноширинная подпись, крупный заголовок и пояснение. *@
 
 <div class="section-header reveal">
-    <span class="section-label">@Label</span>
-    <h2 class="section-title">@Title</h2>
+    <span class="label-mono">@Label</span>
+    <DisplayHeading Text="@Title" />
     @if (!string.IsNullOrWhiteSpace(Subtitle))
     {
         <p class="section-subtitle">@Subtitle</p>
