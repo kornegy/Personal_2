@@ -46,6 +46,7 @@ internal static class EnglishStrings
         ProjectLinkDemo = "Live demo",
         ProjectLinkSource = "Source",
         ProjectPreviewAlt = "Project preview",
+        ProjectTechCountLabel = "technologies",
 
         ExperienceLabel = "Experience",
         ExperienceTitle = "Where and what I worked on",
@@ -53,6 +54,10 @@ internal static class EnglishStrings
 
         ContactLabel = "Contact",
         ContactTitle = "Let's talk about your project",
+        ContactStartProject = "Start a project",
+        ContactPhoneLabel = "Phone",
+        ContactLocationLabel = "Location",
+        ContactRights = "All rights reserved",
         ContactSubtitle = "Tell me a couple of words about it — I reply within one business day.",
         ContactFieldName = "Name",
         ContactFieldEmail = "Email",

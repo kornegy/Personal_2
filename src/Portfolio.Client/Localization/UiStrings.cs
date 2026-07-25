@@ -54,6 +54,7 @@ public sealed class UiStrings
     public required string ProjectLinkDemo { get; init; }
     public required string ProjectLinkSource { get; init; }
     public required string ProjectPreviewAlt { get; init; }
+    public required string ProjectTechCountLabel { get; init; }
 
     // Опыт
     public required string ExperienceLabel { get; init; }
@@ -63,6 +64,13 @@ public sealed class UiStrings
     // Контакты
     public required string ContactLabel { get; init; }
     public required string ContactTitle { get; init; }
+
+    /// <summary>Крупная надпись в финальной секции.</summary>
+    public required string ContactStartProject { get; init; }
+    public required string ContactPhoneLabel { get; init; }
+    public required string ContactLocationLabel { get; init; }
+    public required string ContactRights { get; init; }
+
     public required string ContactSubtitle { get; init; }
     public required string ContactFieldName { get; init; }
     public required string ContactFieldEmail { get; init; }

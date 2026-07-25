@@ -8,5 +8,5 @@ public static class UiStringsCatalog
     public static UiStrings For(string languageCode) =>
         Languages.Normalize(languageCode) == Languages.English
             ? EnglishStrings.Value
-            : RussianStrings.Value;
+            : UkrainianStrings.Value;
 }

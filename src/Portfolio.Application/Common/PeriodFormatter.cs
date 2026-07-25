@@ -8,10 +8,10 @@ namespace Portfolio.Application.Common;
 /// </summary>
 public static class PeriodFormatter
 {
-    private static readonly string[] RussianMonths =
+    private static readonly string[] UkrainianMonths =
     [
-        "январь", "февраль", "март", "апрель", "май", "июнь",
-        "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"
+        "січень", "лютий", "березень", "квітень", "травень", "червень",
+        "липень", "серпень", "вересень", "жовтень", "листопад", "грудень"
     ];
 
     private static readonly string[] EnglishMonths =
@@ -20,20 +20,20 @@ public static class PeriodFormatter
         "july", "august", "september", "october", "november", "december"
     ];
 
-    private const string RussianPresent = "настоящее время";
+    private const string UkrainianPresent = "дотепер";
 
     private const string EnglishPresent = "Present";
 
-    /// <summary>Возвращает строку вида «Март 2022 — настоящее время» или «March 2022 — Present».</summary>
+    /// <summary>Возвращает строку вида «Березень 2022 — дотепер» или «March 2022 — Present».</summary>
     public static string Format(DateOnly start, DateOnly? end, string languageCode)
     {
-        var isRussian = languageCode == Languages.Russian;
-        var months = isRussian ? RussianMonths : EnglishMonths;
+        var isUkrainian = languageCode == Languages.Ukrainian;
+        var months = isUkrainian ? UkrainianMonths : EnglishMonths;
 
         var from = FormatSingle(start, months);
         var to = end.HasValue
             ? FormatSingle(end.Value, months)
-            : isRussian ? RussianPresent : EnglishPresent;
+            : isUkrainian ? UkrainianPresent : EnglishPresent;
 
         return $"{from} — {to}";
     }

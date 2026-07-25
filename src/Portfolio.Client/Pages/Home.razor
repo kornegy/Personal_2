@@ -1,6 +1,7 @@
 @page "/"
 @inherits LocalizedComponentBase
 @inject IPortfolioApi Api
+@inject IJSRuntime JS
 
 @* Одностраничный сайт: данные загружаются один раз и перезагружаются при смене языка. *@
 
@@ -67,6 +68,27 @@ else
         _projects = projectsTask.Result;
         _experience = experienceTask.Result;
         _isLoading = false;
+    }
+
+    /// <summary>
+    /// Наблюдатель за прокруткой навешивается после отрисовки: до этого блоков
+    /// ещё нет в DOM. Повторный вызов безопасен — уже показанные блоки пропускаются.
+    /// </summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_isLoading || _profile is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await JS.InvokeVoidAsync("portfolioApp.initEffects");
+        }
+        catch (JSException)
+        {
+            // Анимация появления — украшение, без неё сайт работает как обычно.
+        }
     }
 
     public override void Dispose()

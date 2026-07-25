@@ -1,53 +1,38 @@
 @inherits LocalizedComponentBase
 @inject IPortfolioApi Api
 
-@* Контакты и форма связи. Правила валидации описаны в Portfolio.Shared
-   и проверяются ещё раз на сервере. *@
+@* Финальная светлая секция: крупный призыв, форма, контакты и нижняя строка.
+   Правила валидации описаны в Portfolio.Shared и проверяются ещё раз на сервере. *@
 
-<section id="contact" class="section">
+<section id="contact" class="section section--ghost">
     <div class="container-narrow">
-        <SectionHeader Label="@T.ContactLabel" Title="@T.ContactTitle" Subtitle="@T.ContactSubtitle" />
+        <div class="reveal">
+            <span class="label-mono">@T.ContactLabel</span>
+            <DisplayHeading Text="@T.ContactStartProject" CssClass="contact-display" />
+        </div>
 
         <div class="contact-grid">
-            <div>
+            <div class="reveal">
                 <ul class="contact-list">
                     <li>
-                        <a href="mailto:@Profile.Email">
-                            <i class="bi bi-envelope"></i>
-                            @Profile.Email
-                        </a>
+                        <span class="label-mono">@T.ContactFieldEmail</span>
+                        <a class="contact-list__value" href="mailto:@Profile.Email">@Profile.Email</a>
                     </li>
                     @if (!string.IsNullOrWhiteSpace(Profile.Phone))
                     {
                         <li>
-                            <a href="tel:@Profile.Phone">
-                                <i class="bi bi-telephone"></i>
-                                @Profile.Phone
-                            </a>
+                            <span class="label-mono">@T.ContactPhoneLabel</span>
+                            <a class="contact-list__value" href="tel:@Profile.Phone">@Profile.Phone</a>
                         </li>
                     }
                     <li>
-                        <span>
-                            <i class="bi bi-geo-alt"></i>
-                            @Profile.Location
-                        </span>
+                        <span class="label-mono">@T.ContactLocationLabel</span>
+                        <span class="contact-list__value">@Profile.Location</span>
                     </li>
                 </ul>
-
-                @if (Profile.SocialLinks.Count > 0)
-                {
-                    <div class="social-row">
-                        @foreach (var link in Profile.SocialLinks)
-                        {
-                            <a href="@link.Url" target="_blank" rel="noopener noreferrer" aria-label="@link.Name" title="@link.Name">
-                                <i class="bi bi-@link.Icon"></i>
-                            </a>
-                        }
-                    </div>
-                }
             </div>
 
-            <div class="form-card">
+            <div class="form-card reveal">
                 <EditForm Model="_model" OnValidSubmit="SubmitAsync">
                     <DataAnnotationsValidator />
 
@@ -81,28 +66,32 @@
                         <InputText id="contact-website" @bind-Value="_model.Website" tabindex="-1" autocomplete="off" />
                     </div>
 
-                    <button type="submit" class="btn-accent w-100" disabled="@_isSending">
-                        @if (_isSending)
-                        {
-                            <span class="spinner"></span>
-                            <span>@T.ContactSending</span>
-                        }
-                        else
-                        {
-                            <i class="bi bi-send"></i>
-                            <span>@T.ContactSubmit</span>
-                        }
+                    <button type="submit" class="btn-accent" disabled="@_isSending">
+                        @(_isSending ? T.ContactSending : T.ContactSubmit)
                     </button>
                 </EditForm>
 
                 @if (_result is not null)
                 {
-                    <div class="form-status @(_result.Success ? "form-status--ok" : "form-status--error")" role="status">
-                        <i class="bi @(_result.Success ? "bi-check-circle" : "bi-exclamation-circle")"></i>
-                        <span>@StatusText</span>
+                    <div class="form-status @(_result.Success ? string.Empty : "form-status--error")" role="status">
+                        @StatusText
                     </div>
                 }
             </div>
+        </div>
+
+        <div class="contact-bottom">
+            @if (Profile.SocialLinks.Count > 0)
+            {
+                <div class="social-row">
+                    @foreach (var link in Profile.SocialLinks)
+                    {
+                        <a href="@link.Url" target="_blank" rel="noopener noreferrer">@link.Name</a>
+                    }
+                </div>
+            }
+
+            <span class="label-mono">© @DateTime.Now.Year @Profile.FullName · @T.ContactRights</span>
         </div>
     </div>
 </section>

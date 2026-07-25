@@ -1,47 +1,47 @@
 @inherits LocalizedComponentBase
 
-@* Первый экран: кто я, чем полезен и что сделать дальше. *@
+@* Первый экран во весь экран. Задник приближается при прокрутке,
+   имя одновременно немного отдаляется — эффект смены фокуса камеры. *@
 
 <section class="hero">
-    <div class="container-narrow hero__grid">
-        <div>
-            <span class="hero__badge">
-                <span class="dot"></span>
-                @T.HeroBadge
-            </span>
+    @if (string.IsNullOrWhiteSpace(Profile.PhotoUrl))
+    {
+        <div class="hero__bg" data-noir-bg aria-hidden="true"></div>
+    }
+    else
+    {
+        <div class="hero__bg hero__bg--photo" data-noir-bg aria-hidden="true">
+            <img src="@Profile.PhotoUrl" alt="" />
+        </div>
+    }
 
+    <div class="container-narrow hero__inner">
+        <span class="label-mono hero__eyebrow">@T.HeroBadge</span>
+
+        <div class="hero__title-wrap" data-noir-title>
             <h1 class="hero__name">@Profile.FullName</h1>
-            <p class="hero__title">@Profile.Title</p>
-            <p class="hero__headline">@Profile.Headline</p>
-
-            <div class="hero__actions">
-                <a class="btn-accent" href="#contact">
-                    <i class="bi bi-send"></i> @T.HeroCtaContact
-                </a>
-                <a class="btn-ghost" href="#projects">@T.HeroCtaProjects</a>
-                @if (!string.IsNullOrWhiteSpace(Profile.ResumeUrl))
-                {
-                    <a class="btn-ghost" href="@Profile.ResumeUrl" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-file-earmark-text"></i> @T.HeroCtaResume
-                    </a>
-                }
-            </div>
-
-            <div class="hero__meta">
-                <span><i class="bi bi-geo-alt"></i>@Profile.Location</span>
-                <span>
-                    <i class="bi bi-briefcase"></i>
-                    @Profile.YearsOfExperience @(T.YearsWord(Profile.YearsOfExperience)) @T.HeroExperienceSuffix
-                </span>
-            </div>
+            <span class="hero__role">@Profile.Title</span>
         </div>
 
-        @if (!string.IsNullOrWhiteSpace(Profile.PhotoUrl))
-        {
-            <div class="hero__photo">
-                <img src="@Profile.PhotoUrl" alt="@T.HeroPhotoAlt: @Profile.FullName" width="400" height="400" />
-            </div>
-        }
+        <p class="hero__headline">@Profile.Headline</p>
+
+        <div class="hero__actions">
+            <a class="btn-accent" href="#contact">@T.HeroCtaContact</a>
+            <a class="btn-ghost" href="#projects">@T.HeroCtaProjects</a>
+            @if (!string.IsNullOrWhiteSpace(Profile.ResumeUrl))
+            {
+                <a class="btn-ghost" href="@Profile.ResumeUrl" target="_blank" rel="noopener noreferrer">
+                    @T.HeroCtaResume
+                </a>
+            }
+        </div>
+
+        <div class="hero__meta">
+            <span class="label-mono">@Profile.Location</span>
+            <span class="label-mono">
+                @Profile.YearsOfExperience @(T.YearsWord(Profile.YearsOfExperience)) @T.HeroExperienceSuffix
+            </span>
+        </div>
     </div>
 </section>
 

@@ -2,6 +2,7 @@ using Microsoft.Net.Http.Headers;
 using Portfolio.Api.Endpoints;
 using Portfolio.Api.Extensions;
 using Portfolio.Api.Middleware;
+using Portfolio.Api.Security;
 using Portfolio.Application;
 using Portfolio.Application.Contact;
 using Portfolio.Infrastructure;
@@ -29,16 +30,16 @@ builder.Services.AddOutputCache(options =>
         .Expire(TimeSpan.FromMinutes(10))
         .SetVaryByQuery(PortfolioEndpoints.LanguageQueryParameter)));
 
-builder.Services.AddHsts(options =>
-{
-    options.MaxAge = TimeSpan.FromDays(365);
-    options.IncludeSubDomains = true;
-});
+builder.Services.AddPortfolioSecurity(builder.Configuration);
 
 var app = builder.Build();
 
 EnsureContactSaltConfigured(app);
 await app.Services.InitializeDatabaseAsync();
+
+// Должно идти первым: остальные middleware обязаны видеть настоящие
+// схему и IP клиента, а не адрес reverse proxy.
+app.UseTrustedProxies();
 
 if (app.Environment.IsDevelopment())
 {
@@ -47,11 +48,16 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseGlobalExceptionHandling();
+
+    // Говорит браузеру год ходить на сайт только по https, даже если
+    // пользователь наберёт адрес вручную без протокола.
     app.UseHsts();
 }
 
+// Любой запрос по http получает постоянный редирект на https.
+// За прокси, который сам завершает TLS, редирект можно отключить в конфигурации.
+app.UseHttpsRedirectionIfEnabled();
 app.UseSecurityHeaders();
-app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles(new StaticFileOptions
@@ -67,6 +73,10 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 app.UseRateLimiter();
 app.UseOutputCache();
+
+// Хостинг проверяет этим адресом, что приложение живо.
+// Отдельная точка нужна, чтобы проверка не тянула страницу целиком.
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
 app.MapPortfolioEndpoints();
 app.MapContactEndpoints();

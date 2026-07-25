@@ -1,0 +1,27 @@
+@* Крупный заголовок раздела: последнее слово отделяется тонким курсивом.
+   Контрастная пара начертаний — основной приём этого стиля. *@
+
+@* Пробел между частями стоит прямо в разметке: перенос строки Razor съедает. *@
+<h2 class="display @CssClass"><span class="display__strong">@Strong</span> <span class="display__thin">@Thin</span></h2>
+
+@code {
+    /// <summary>Текст заголовка целиком, например «Вибрані роботи».</summary>
+    [Parameter, EditorRequired] public string Text { get; set; } = string.Empty;
+
+    [Parameter] public string? CssClass { get; set; }
+
+    private string Strong => Split().Strong;
+
+    private string Thin => Split().Thin;
+
+    /// <summary>Последнее слово уходит в курсив, остальное остаётся жирным.</summary>
+    private (string Strong, string Thin) Split()
+    {
+        var text = Text.Trim();
+        var lastSpace = text.LastIndexOf(' ');
+
+        return lastSpace < 0
+            ? (string.Empty, text)
+            : (text[..lastSpace], text[(lastSpace + 1)..]);
+    }
+}

@@ -1,14 +1,11 @@
 @inherits LocalizedComponentBase
 
-@* Шапка с якорными ссылками и переключателем языка.
-   Меню на мобильных открывается без JavaScript — состоянием управляет сам компонент. *@
+@* Фиксированная шапка. Режим смешивания difference держит текст читаемым
+   и на чёрных, и на белых секциях. Меню на мобильных открывается без JavaScript. *@
 
 <header class="site-header">
-    <div class="container-narrow site-header__inner">
-        <a class="brand" href="#top">
-            <span class="brand__mark"><i class="bi bi-code-slash"></i></span>
-            <span>@T.BrandText</span>
-        </a>
+    <div class="site-header__inner">
+        <a class="brand" href="#top">@T.BrandText</a>
 
         <nav aria-label="@T.NavAriaLabel">
             <ul class="nav-links @(_isOpen ? "nav-links--open" : string.Empty)">
@@ -16,7 +13,7 @@
                 <li><a href="#skills" @onclick="Close">@T.NavSkills</a></li>
                 <li><a href="#projects" @onclick="Close">@T.NavProjects</a></li>
                 <li><a href="#experience" @onclick="Close">@T.NavExperience</a></li>
-                <li><a class="btn-accent" href="#contact" @onclick="Close">@T.NavContactCta</a></li>
+                <li><a href="#contact" @onclick="Close">@T.NavContactCta</a></li>
             </ul>
         </nav>
 
@@ -38,7 +35,7 @@
                     aria-label="@(_isOpen ? T.MenuClose : T.MenuOpen)"
                     aria-expanded="@(_isOpen ? "true" : "false")"
                     @onclick="Toggle">
-                <i class="bi @(_isOpen ? "bi-x" : "bi-list")"></i>
+                <i class="bi @(_isOpen ? "bi-x-lg" : "bi-list")"></i>
             </button>
         </div>
     </div>
