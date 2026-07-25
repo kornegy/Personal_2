@@ -6,7 +6,7 @@
     <div class="container-narrow">
         <SectionHeader Label="@T.AboutLabel" Title="@T.AboutTitle" />
 
-        <div class="about__text">
+        <div class="about__text reveal">
             @foreach (var paragraph in Paragraphs)
             {
                 <p class="text-muted-soft">@paragraph</p>
@@ -14,15 +14,15 @@
         </div>
 
         <div class="about__stats">
-            <div class="stat-card">
+            <div class="stat-card reveal">
                 <div class="stat-card__value">@(Profile.YearsOfExperience)+</div>
                 <div class="stat-card__label">@T.AboutStatYears</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card reveal">
                 <div class="stat-card__value">@ProjectCount</div>
                 <div class="stat-card__label">@T.AboutStatProjects</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card reveal">
                 <div class="stat-card__value">@TechnologyCount</div>
                 <div class="stat-card__label">@T.AboutStatTechnologies</div>
             </div>

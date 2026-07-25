@@ -2,17 +2,19 @@
 
 @* Карточка одного проекта. *@
 
-<article class="project-card">
-    <div class="project-card__cover">
-        @if (!string.IsNullOrWhiteSpace(Project.ImageUrl))
-        {
+<article class="project-card reveal">
+    @if (!string.IsNullOrWhiteSpace(Project.ImageUrl))
+    {
+        <div class="project-card__cover">
             <img src="@Project.ImageUrl" alt="@T.ProjectPreviewAlt: @Project.Title" loading="lazy" />
-        }
-        else
-        {
+        </div>
+    }
+    else
+    {
+        <div class="project-card__cover project-card__cover--placeholder">
             <i class="bi bi-window-stack" aria-hidden="true"></i>
-        }
-    </div>
+        </div>
+    }
 
     <div class="project-card__body">
         <div class="project-card__head">

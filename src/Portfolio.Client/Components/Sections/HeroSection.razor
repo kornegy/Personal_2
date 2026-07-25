@@ -1,44 +1,40 @@
 @inherits LocalizedComponentBase
 
-@* Первый экран: кто я, чем полезен и что сделать дальше. *@
+@* Первый экран: всё по центру, крупное имя, фото — отдельным объектом под текстом. *@
 
 <section class="hero">
-    <div class="container-narrow hero__grid">
-        <div>
-            <span class="hero__badge">
-                <span class="dot"></span>
-                @T.HeroBadge
-            </span>
+    <div class="container-narrow hero__inner">
+        <span class="hero__badge">
+            <span class="dot"></span>
+            @T.HeroBadge
+        </span>
 
-            <h1 class="hero__name">@Profile.FullName</h1>
-            <p class="hero__title">@Profile.Title</p>
-            <p class="hero__headline">@Profile.Headline</p>
+        <h1 class="hero__name">@Profile.FullName</h1>
+        <p class="hero__title">@Profile.Title</p>
+        <p class="hero__headline">@Profile.Headline</p>
 
-            <div class="hero__actions">
-                <a class="btn-accent" href="#contact">
-                    <i class="bi bi-send"></i> @T.HeroCtaContact
+        <div class="hero__actions">
+            <a class="btn-accent" href="#contact">@T.HeroCtaContact</a>
+            <a class="btn-ghost" href="#projects">@T.HeroCtaProjects</a>
+            @if (!string.IsNullOrWhiteSpace(Profile.ResumeUrl))
+            {
+                <a class="btn-ghost" href="@Profile.ResumeUrl" target="_blank" rel="noopener noreferrer">
+                    @T.HeroCtaResume
                 </a>
-                <a class="btn-ghost" href="#projects">@T.HeroCtaProjects</a>
-                @if (!string.IsNullOrWhiteSpace(Profile.ResumeUrl))
-                {
-                    <a class="btn-ghost" href="@Profile.ResumeUrl" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-file-earmark-text"></i> @T.HeroCtaResume
-                    </a>
-                }
-            </div>
+            }
+        </div>
 
-            <div class="hero__meta">
-                <span><i class="bi bi-geo-alt"></i>@Profile.Location</span>
-                <span>
-                    <i class="bi bi-briefcase"></i>
-                    @Profile.YearsOfExperience @(T.YearsWord(Profile.YearsOfExperience)) @T.HeroExperienceSuffix
-                </span>
-            </div>
+        <div class="hero__meta">
+            <span><i class="bi bi-geo-alt"></i>@Profile.Location</span>
+            <span>
+                <i class="bi bi-briefcase"></i>
+                @Profile.YearsOfExperience @(T.YearsWord(Profile.YearsOfExperience)) @T.HeroExperienceSuffix
+            </span>
         </div>
 
         @if (!string.IsNullOrWhiteSpace(Profile.PhotoUrl))
         {
-            <div class="hero__photo">
+            <div class="hero__photo reveal">
                 <img src="@Profile.PhotoUrl" alt="@T.HeroPhotoAlt: @Profile.FullName" width="400" height="400" />
             </div>
         }
