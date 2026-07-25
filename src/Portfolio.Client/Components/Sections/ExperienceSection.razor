@@ -1,0 +1,36 @@
+@* Таймлайн опыта: где работал и что делал. *@
+
+<section id="experience" class="section">
+    <div class="container-narrow">
+        <SectionHeader Label="Опыт" Title="Где и над чем работал" />
+
+        @if (Items.Count == 0)
+        {
+            <LoadingBlock Text="Данные об опыте недоступны" />
+        }
+        else
+        {
+            <ol class="timeline">
+                @foreach (var item in Items)
+                {
+                    <li class="timeline__item @(item.IsCurrent ? "timeline__item--current" : string.Empty)">
+                        <div class="timeline__period">@item.Period</div>
+                        <h3 class="timeline__position">@item.Position</h3>
+                        <div class="timeline__company">@item.Company</div>
+
+                        <ul class="timeline__highlights">
+                            @foreach (var highlight in item.Highlights)
+                            {
+                                <li>@highlight</li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ol>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ExperienceDto> Items { get; set; } = [];
+}

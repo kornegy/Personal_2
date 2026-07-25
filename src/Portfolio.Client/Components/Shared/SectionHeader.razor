@@ -1,0 +1,18 @@
+@* Единая шапка секции: подпись, заголовок и пояснение. *@
+
+<div>
+    <span class="section-label">@Label</span>
+    <h2 class="section-title">@Title</h2>
+    @if (!string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <p class="section-subtitle">@Subtitle</p>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+
+    [Parameter] public string? Subtitle { get; set; }
+}

@@ -1,0 +1,47 @@
+## .NET / Visual Studio
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+[Bb]uild/
+artifacts/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+.idea/
+*.swp
+
+## Rider
+*.sln.iml
+
+## Публикация
+publish/
+*.publishsettings
+PublishProfiles/
+
+## Локальная база SQLite (создаётся автоматически при запуске)
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+## Секреты и локальные настройки
+appsettings.Local.json
+appsettings.*.local.json
+.env
+.env.*
+!.env.example
+
+## Прочее
+*.log
+.DS_Store
+Thumbs.db
+node_modules/
+TestResults/
+coverage/
+*.coverage
+*.trx

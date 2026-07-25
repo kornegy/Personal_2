@@ -1,0 +1,41 @@
+@* Короткий рассказ о себе и цифры, которые подтверждают слова. *@
+
+<section id="about" class="section">
+    <div class="container-narrow">
+        <SectionHeader Label="Обо мне" Title="Кто я и чем полезен" />
+
+        <div class="about__text">
+            @foreach (var paragraph in Paragraphs)
+            {
+                <p class="text-muted-soft">@paragraph</p>
+            }
+        </div>
+
+        <div class="about__stats">
+            <div class="stat-card">
+                <div class="stat-card__value">@(Profile.YearsOfExperience)+</div>
+                <div class="stat-card__label">лет в разработке</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__value">@ProjectCount</div>
+                <div class="stat-card__label">проектов в портфолио</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__value">@TechnologyCount</div>
+                <div class="stat-card__label">технологий в работе</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public ProfileDto Profile { get; set; } = default!;
+
+    [Parameter] public int ProjectCount { get; set; }
+
+    [Parameter] public int TechnologyCount { get; set; }
+
+    /// <summary>Текст «Обо мне» хранится строками — каждая становится абзацем.</summary>
+    private IEnumerable<string> Paragraphs =>
+        Profile.About.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+}

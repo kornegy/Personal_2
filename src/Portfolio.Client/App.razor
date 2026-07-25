@@ -1,0 +1,16 @@
+@* Корневой компонент: маршрутизация страниц. *@
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <section class="section text-center">
+                <h1 class="section-title">Страница не найдена</h1>
+                <p class="text-muted-soft">Такой страницы нет — вернитесь на главную.</p>
+                <a class="btn-accent mt-3" href="/">На главную</a>
+            </section>
+        </LayoutView>
+    </NotFound>
+</Router>

@@ -1,0 +1,64 @@
+@* Первый экран: кто я, чем полезен и что сделать дальше. *@
+
+<section class="hero">
+    <div class="container-narrow hero__grid">
+        <div>
+            <span class="hero__badge">
+                <span class="dot"></span>
+                Открыт к новым проектам
+            </span>
+
+            <h1 class="hero__name">@Profile.FullName</h1>
+            <p class="hero__title">@Profile.Title</p>
+            <p class="hero__headline">@Profile.Headline</p>
+
+            <div class="hero__actions">
+                <a class="btn-accent" href="#contact">
+                    <i class="bi bi-send"></i> Обсудить проект
+                </a>
+                <a class="btn-ghost" href="#projects">Посмотреть работы</a>
+                @if (!string.IsNullOrWhiteSpace(Profile.ResumeUrl))
+                {
+                    <a class="btn-ghost" href="@Profile.ResumeUrl" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-file-earmark-text"></i> Резюме
+                    </a>
+                }
+            </div>
+
+            <div class="hero__meta">
+                <span><i class="bi bi-geo-alt"></i>@Profile.Location</span>
+                <span><i class="bi bi-briefcase"></i>@Profile.YearsOfExperience @YearsWord — коммерческий опыт</span>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Profile.PhotoUrl))
+        {
+            <div class="hero__photo">
+                <img src="@Profile.PhotoUrl" alt="Фотография: @Profile.FullName" width="400" height="400" />
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public ProfileDto Profile { get; set; } = default!;
+
+    /// <summary>«год / года / лет» — иначе подпись читается неестественно.</summary>
+    private string YearsWord => PluralizeYears(Profile.YearsOfExperience);
+
+    private static string PluralizeYears(int value)
+    {
+        var lastTwo = value % 100;
+        if (lastTwo is >= 11 and <= 14)
+        {
+            return "лет";
+        }
+
+        return (value % 10) switch
+        {
+            1 => "год",
+            2 or 3 or 4 => "года",
+            _ => "лет"
+        };
+    }
+}

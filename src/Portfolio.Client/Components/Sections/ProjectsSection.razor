@@ -1,0 +1,27 @@
+@* Работы: что было сделано и на чём. *@
+
+<section id="projects" class="section">
+    <div class="container-narrow">
+        <SectionHeader Label="Проекты"
+                       Title="Избранные работы"
+                       Subtitle="Несколько задач, по которым видно подход к работе и уровень проработки деталей." />
+
+        @if (Projects.Count == 0)
+        {
+            <LoadingBlock Text="Проекты недоступны" />
+        }
+        else
+        {
+            <div class="projects-grid">
+                @foreach (var project in Projects)
+                {
+                    <ProjectCard Project="project" />
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ProjectDto> Projects { get; set; } = [];
+}

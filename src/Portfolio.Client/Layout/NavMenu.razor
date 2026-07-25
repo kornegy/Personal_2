@@ -1,0 +1,44 @@
+@* Шапка с якорными ссылками. Меню на мобильных открывается без JavaScript — состоянием управляет сам компонент. *@
+
+<header class="site-header">
+    <div class="container-narrow site-header__inner">
+        <a class="brand" href="#top">
+            <span class="brand__mark"><i class="bi bi-code-slash"></i></span>
+            <span>Портфолио</span>
+        </a>
+
+        <nav aria-label="Разделы сайта">
+            <ul class="nav-links @(_isOpen ? "nav-links--open" : string.Empty)">
+                @foreach (var (href, text) in Links)
+                {
+                    <li><a href="@href" @onclick="Close">@text</a></li>
+                }
+                <li><a class="btn-accent" href="#contact" @onclick="Close">Написать мне</a></li>
+            </ul>
+        </nav>
+
+        <button type="button"
+                class="nav-toggle"
+                aria-label="@(_isOpen ? "Закрыть меню" : "Открыть меню")"
+                aria-expanded="@(_isOpen ? "true" : "false")"
+                @onclick="Toggle">
+            <i class="bi @(_isOpen ? "bi-x" : "bi-list")"></i>
+        </button>
+    </div>
+</header>
+
+@code {
+    private static readonly (string Href, string Text)[] Links =
+    [
+        ("#about", "Обо мне"),
+        ("#skills", "Технологии"),
+        ("#projects", "Проекты"),
+        ("#experience", "Опыт")
+    ];
+
+    private bool _isOpen;
+
+    private void Toggle() => _isOpen = !_isOpen;
+
+    private void Close() => _isOpen = false;
+}

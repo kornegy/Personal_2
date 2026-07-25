@@ -1,0 +1,38 @@
+@* Технологии, сгруппированные по назначению. *@
+
+<section id="skills" class="section">
+    <div class="container-narrow">
+        <SectionHeader Label="Технологии"
+                       Title="С чем я работаю"
+                       Subtitle="Инструменты, которые использую каждый день и готов применить на вашем проекте." />
+
+        @if (Categories.Count == 0)
+        {
+            <LoadingBlock Text="Список технологий недоступен" />
+        }
+        else
+        {
+            <div class="skills-grid">
+                @foreach (var category in Categories)
+                {
+                    <article class="skill-card">
+                        <div class="skill-card__head">
+                            <span class="skill-card__icon"><i class="bi bi-@category.Icon"></i></span>
+                            <h3 class="skill-card__title">@category.Name</h3>
+                        </div>
+                        <ul class="chips">
+                            @foreach (var skill in category.Skills)
+                            {
+                                <li class="chip">@skill</li>
+                            }
+                        </ul>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<SkillCategoryDto> Categories { get; set; } = [];
+}

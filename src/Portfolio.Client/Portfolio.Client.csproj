@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <!-- Интерфейс сайта. Знает только про контракты API из Portfolio.Shared. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Portfolio.Shared\Portfolio.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

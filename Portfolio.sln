@@ -1,0 +1,74 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B0000000-0000-4000-8000-00000000000A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B0000000-0000-4000-8000-00000000000B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Domain", "src\Portfolio.Domain\Portfolio.Domain.csproj", "{A1000000-0000-4000-8000-000000000001}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Application", "src\Portfolio.Application\Portfolio.Application.csproj", "{A1000000-0000-4000-8000-000000000002}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Infrastructure", "src\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj", "{A1000000-0000-4000-8000-000000000003}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Shared", "src\Portfolio.Shared\Portfolio.Shared.csproj", "{A1000000-0000-4000-8000-000000000004}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Api", "src\Portfolio.Api\Portfolio.Api.csproj", "{A1000000-0000-4000-8000-000000000005}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Client", "src\Portfolio.Client\Portfolio.Client.csproj", "{A1000000-0000-4000-8000-000000000006}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Tests", "tests\Portfolio.Tests\Portfolio.Tests.csproj", "{A1000000-0000-4000-8000-000000000007}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1000000-0000-4000-8000-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000006}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-4000-8000-000000000007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-4000-8000-000000000007}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1000000-0000-4000-8000-000000000001} = {B0000000-0000-4000-8000-00000000000A}
+		{A1000000-0000-4000-8000-000000000002} = {B0000000-0000-4000-8000-00000000000A}
+		{A1000000-0000-4000-8000-000000000003} = {B0000000-0000-4000-8000-00000000000A}
+		{A1000000-0000-4000-8000-000000000004} = {B0000000-0000-4000-8000-00000000000A}
+		{A1000000-0000-4000-8000-000000000005} = {B0000000-0000-4000-8000-00000000000A}
+		{A1000000-0000-4000-8000-000000000006} = {B0000000-0000-4000-8000-00000000000A}
+		{A1000000-0000-4000-8000-000000000007} = {B0000000-0000-4000-8000-00000000000B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0000000-0000-4000-8000-00000000000C}
+	EndGlobalSection
+EndGlobal

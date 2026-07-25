@@ -1,0 +1,56 @@
+@* Карточка одного проекта. *@
+
+<article class="project-card">
+    <div class="project-card__cover">
+        @if (!string.IsNullOrWhiteSpace(Project.ImageUrl))
+        {
+            <img src="@Project.ImageUrl" alt="Превью проекта: @Project.Title" loading="lazy" />
+        }
+        else
+        {
+            <i class="bi bi-window-stack" aria-hidden="true"></i>
+        }
+    </div>
+
+    <div class="project-card__body">
+        <div class="project-card__head">
+            <h3 class="project-card__title">@Project.Title</h3>
+            <span class="project-card__year">@Project.Year</span>
+        </div>
+
+        <p class="project-card__summary">@Project.Summary</p>
+        <p class="project-card__description">@Project.Description</p>
+
+        <ul class="chips">
+            @foreach (var technology in Project.Technologies)
+            {
+                <li class="chip chip--accent">@technology</li>
+            }
+        </ul>
+
+        @if (HasLinks)
+        {
+            <div class="project-card__links">
+                @if (!string.IsNullOrWhiteSpace(Project.DemoUrl))
+                {
+                    <a href="@Project.DemoUrl" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-box-arrow-up-right"></i> Демо
+                    </a>
+                }
+                @if (!string.IsNullOrWhiteSpace(Project.SourceUrl))
+                {
+                    <a href="@Project.SourceUrl" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-github"></i> Код
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public ProjectDto Project { get; set; } = default!;
+
+    private bool HasLinks =>
+        !string.IsNullOrWhiteSpace(Project.DemoUrl) || !string.IsNullOrWhiteSpace(Project.SourceUrl);
+}

@@ -1,0 +1,69 @@
+@page "/"
+@implements IDisposable
+@inject IPortfolioApi Api
+
+@* Одностраничный сайт: данные загружаются один раз, секции только отображают их. *@
+
+<PageTitle>@(_profile?.FullName ?? "Портфолио") — @(_profile?.Title ?? "Front-End разработчик")</PageTitle>
+
+@if (_isLoading)
+{
+    <div class="container-narrow">
+        <LoadingBlock Text="Загружаем портфолио…" />
+    </div>
+}
+else if (_profile is null)
+{
+    <div class="container-narrow">
+        <section class="section">
+            <h1 class="section-title">Сайт временно недоступен</h1>
+            <p class="text-muted-soft">Не удалось загрузить данные. Обновите страницу через минуту.</p>
+        </section>
+    </div>
+}
+else
+{
+    <HeroSection Profile="_profile" />
+    <AboutSection Profile="_profile" ProjectCount="_projects.Count" TechnologyCount="TechnologyCount" />
+    <SkillsSection Categories="_skills" />
+    <ProjectsSection Projects="_projects" />
+    <ExperienceSection Items="_experience" />
+    <ContactSection Profile="_profile" />
+}
+
+@code {
+    private readonly CancellationTokenSource _cts = new();
+
+    private ProfileDto? _profile;
+    private IReadOnlyList<SkillCategoryDto> _skills = [];
+    private IReadOnlyList<ProjectDto> _projects = [];
+    private IReadOnlyList<ExperienceDto> _experience = [];
+    private bool _isLoading = true;
+
+    private int TechnologyCount => _skills.Sum(category => category.Skills.Count);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = _cts.Token;
+
+        // Запросы независимы, поэтому идут параллельно.
+        var profileTask = Api.GetProfileAsync(token);
+        var skillsTask = Api.GetSkillsAsync(token);
+        var projectsTask = Api.GetProjectsAsync(token);
+        var experienceTask = Api.GetExperienceAsync(token);
+
+        await Task.WhenAll(profileTask, skillsTask, projectsTask, experienceTask);
+
+        _profile = profileTask.Result;
+        _skills = skillsTask.Result;
+        _projects = projectsTask.Result;
+        _experience = experienceTask.Result;
+        _isLoading = false;
+    }
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+}

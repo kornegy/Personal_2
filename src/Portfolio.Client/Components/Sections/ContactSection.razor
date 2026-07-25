@@ -1,0 +1,137 @@
+@* Контакты и форма связи. Валидация описана в Portfolio.Shared и дублируется на сервере. *@
+@inject IPortfolioApi Api
+
+<section id="contact" class="section">
+    <div class="container-narrow">
+        <SectionHeader Label="Контакты"
+                       Title="Давайте обсудим задачу"
+                       Subtitle="Напишите пару слов о проекте — отвечу в течение рабочего дня." />
+
+        <div class="contact-grid">
+            <div>
+                <ul class="contact-list">
+                    <li>
+                        <a href="mailto:@Profile.Email">
+                            <i class="bi bi-envelope"></i>
+                            @Profile.Email
+                        </a>
+                    </li>
+                    @if (!string.IsNullOrWhiteSpace(Profile.Phone))
+                    {
+                        <li>
+                            <a href="tel:@Profile.Phone">
+                                <i class="bi bi-telephone"></i>
+                                @Profile.Phone
+                            </a>
+                        </li>
+                    }
+                    <li>
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            @Profile.Location
+                        </span>
+                    </li>
+                </ul>
+
+                @if (Profile.SocialLinks.Count > 0)
+                {
+                    <div class="social-row">
+                        @foreach (var link in Profile.SocialLinks)
+                        {
+                            <a href="@link.Url" target="_blank" rel="noopener noreferrer" aria-label="@link.Name" title="@link.Name">
+                                <i class="bi bi-@link.Icon"></i>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="form-card">
+                <EditForm Model="_model" OnValidSubmit="SubmitAsync">
+                    <DataAnnotationsValidator />
+
+                    <div class="field">
+                        <label for="contact-name">Имя</label>
+                        <InputText id="contact-name" @bind-Value="_model.Name" placeholder="Как к вам обращаться" autocomplete="name" />
+                        <ValidationMessage For="() => _model.Name" />
+                    </div>
+
+                    <div class="field">
+                        <label for="contact-email">Email</label>
+                        <InputText id="contact-email" type="email" @bind-Value="_model.Email" placeholder="you@@example.com" autocomplete="email" />
+                        <ValidationMessage For="() => _model.Email" />
+                    </div>
+
+                    <div class="field">
+                        <label for="contact-subject">Тема</label>
+                        <InputText id="contact-subject" @bind-Value="_model.Subject" placeholder="Например: лендинг для студии" />
+                        <ValidationMessage For="() => _model.Subject" />
+                    </div>
+
+                    <div class="field">
+                        <label for="contact-message">Сообщение</label>
+                        <InputTextArea id="contact-message" @bind-Value="_model.Message" placeholder="Опишите задачу, сроки и бюджет" />
+                        <ValidationMessage For="() => _model.Message" />
+                    </div>
+
+                    @* Ловушка для ботов: поле скрыто и недоступно с клавиатуры. *@
+                    <div class="honeypot" aria-hidden="true">
+                        <label for="contact-website">Не заполняйте это поле</label>
+                        <InputText id="contact-website" @bind-Value="_model.Website" tabindex="-1" autocomplete="off" />
+                    </div>
+
+                    <button type="submit" class="btn-accent w-100" disabled="@_isSending">
+                        @if (_isSending)
+                        {
+                            <span class="spinner"></span>
+                            <span>Отправляем…</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-send"></i>
+                            <span>Отправить сообщение</span>
+                        }
+                    </button>
+                </EditForm>
+
+                @if (_result is not null)
+                {
+                    <div class="form-status @(_result.Success ? "form-status--ok" : "form-status--error")" role="status">
+                        <i class="bi @(_result.Success ? "bi-check-circle" : "bi-exclamation-circle")"></i>
+                        <span>@_result.Message</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public ProfileDto Profile { get; set; } = default!;
+
+    private ContactRequest _model = new();
+    private ContactResult? _result;
+    private bool _isSending;
+
+    private async Task SubmitAsync()
+    {
+        _isSending = true;
+        _result = null;
+
+        try
+        {
+            _result = await Api.SendContactAsync(_model);
+
+            if (_result.Success)
+            {
+                // Форма очищается только после успешной отправки,
+                // иначе пользователь потеряет набранный текст.
+                _model = new ContactRequest();
+            }
+        }
+        finally
+        {
+            _isSending = false;
+        }
+    }
+}
