@@ -1,0 +1,28 @@
+# Описание сервиса для Render. Подключается через Blueprint:
+# New → Blueprint → выбрать этот репозиторий. Всё ниже применится автоматически.
+
+services:
+  - type: web
+    name: artem-koval-portfolio
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+      # Соль для хеширования IP отправителей формы.
+      # Render сгенерирует случайное значение сам и больше его не покажет —
+      # вписывать что-то руками не нужно.
+      - key: Contact__IpHashSalt
+        generateValue: true
+
+      # TLS завершается на прокси Render, до приложения запрос доходит по http.
+      # Без этого приложение считало бы всех посетителей одним адресом
+      # и ограничение частоты запросов работало бы неверно.
+      - key: Security__TrustAllProxies
+        value: "true"

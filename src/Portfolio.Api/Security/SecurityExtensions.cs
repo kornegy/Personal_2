@@ -32,15 +32,22 @@ public static class SecurityExtensions
             hsts.IncludeSubDomains = true;
         });
 
-        if (options.KnownProxies.Count > 0)
+        if (UsesForwardedHeaders(options))
         {
             services.Configure<ForwardedHeadersOptions>(forwarded =>
             {
                 forwarded.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 
-                // Список доверенных прокси задаётся явно, «доверять всем» не используем.
+                // Списки по умолчанию разрешают только localhost — очищаем и задаём свои.
                 forwarded.KnownProxies.Clear();
                 forwarded.KnownNetworks.Clear();
+
+                if (options.TrustAllProxies)
+                {
+                    // Пустые списки означают «доверять любому источнику».
+                    // Допустимо только когда приложение доступно исключительно через прокси платформы.
+                    return;
+                }
 
                 foreach (var proxy in options.KnownProxies)
                 {
@@ -56,17 +63,32 @@ public static class SecurityExtensions
     }
 
     /// <summary>
-    /// Включает чтение X-Forwarded-* только если в конфигурации перечислены доверенные прокси.
+    /// Включает чтение X-Forwarded-* только если прокси заданы в конфигурации.
     /// Вызывается до всех остальных middleware: они должны видеть уже исправленные схему и IP.
     /// </summary>
     public static IApplicationBuilder UseTrustedProxies(this WebApplication app)
     {
         var options = app.Services.GetRequiredService<IOptions<SecurityOptions>>().Value;
-        if (options.KnownProxies.Count > 0)
+        if (UsesForwardedHeaders(options))
         {
             app.UseForwardedHeaders();
         }
 
         return app;
     }
+
+    /// <summary>Перенаправление на https включается только если его не отключили явно.</summary>
+    public static IApplicationBuilder UseHttpsRedirectionIfEnabled(this WebApplication app)
+    {
+        var options = app.Services.GetRequiredService<IOptions<SecurityOptions>>().Value;
+        if (options.EnableHttpsRedirection)
+        {
+            app.UseHttpsRedirection();
+        }
+
+        return app;
+    }
+
+    private static bool UsesForwardedHeaders(SecurityOptions options) =>
+        options.TrustAllProxies || options.KnownProxies.Count > 0;
 }

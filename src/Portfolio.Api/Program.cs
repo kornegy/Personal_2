@@ -55,7 +55,8 @@ else
 }
 
 // Любой запрос по http получает постоянный редирект на https.
-app.UseHttpsRedirection();
+// За прокси, который сам завершает TLS, редирект можно отключить в конфигурации.
+app.UseHttpsRedirectionIfEnabled();
 app.UseSecurityHeaders();
 
 app.UseBlazorFrameworkFiles();
@@ -72,6 +73,10 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 app.UseRateLimiter();
 app.UseOutputCache();
+
+// Хостинг проверяет этим адресом, что приложение живо.
+// Отдельная точка нужна, чтобы проверка не тянула страницу целиком.
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
 app.MapPortfolioEndpoints();
 app.MapContactEndpoints();
