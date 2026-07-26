@@ -342,6 +342,12 @@ img {
     color: #666;
 }
 
+/* Внутрь тёмной карточки правила светлой секции не пускаем */
+.section--light .project-card .label-mono,
+.section--ghost .project-card .label-mono {
+    color: var(--c-muted);
+}
+
 /* Крупный заголовок раздела с контрастной парой начертаний */
 .display {
     font-size: clamp(2.25rem, 7vw, 7rem);
@@ -627,19 +633,17 @@ img {
     align-content: flex-start;
 }
 
+/* Цвет наследуется от контейнера, а не задаётся под каждую секцию:
+   карточка проекта остаётся тёмной даже на светлой секции, и жёсткое
+   правило красило текст чипов в чёрный по чёрному. */
 .chip {
     padding: 0.4rem 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
     font-family: var(--mono);
     font-size: 0.8125rem;
     letter-spacing: 0.08em;
-    color: var(--c-fg);
-}
-
-.section--light .chip,
-.section--ghost .chip {
-    border-color: rgba(0, 0, 0, 0.2);
-    color: var(--c-ink);
+    color: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-color: color-mix(in srgb, currentColor 30%, transparent);
 }
 
 /* ---------- Проекты: светлая секция ---------- */
