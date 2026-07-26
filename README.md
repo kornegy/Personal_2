@@ -1,37 +1,38 @@
-# Сайт-визитка Front-End разработчика
+# Front-End Developer Portfolio
 
-Полноценное фул-стек приложение: **Blazor WebAssembly** на клиенте, **ASP.NET Core** + **SQLite** на сервере.
-Сайт двуязычный (украинский и английский), весь контент хранится в базе, а не зашит в разметку.
+A full-stack application: **Blazor WebAssembly** on the client, **ASP.NET Core** + **SQLite** on the server.
+The site is bilingual (Ukrainian and English) and all content lives in the database rather than
+being hardcoded into the markup.
 
 ---
 
-## Стек
+## Stack
 
-| Слой | Технологии |
-|------|------------|
+| Layer | Technologies |
+|-------|--------------|
 | Front-end | Blazor WebAssembly, Bootstrap 5, HTML, CSS |
 | Back-end | ASP.NET Core 8 Minimal API, C# |
-| База данных | SQLite + Entity Framework Core 8 (миграции) |
-| Тесты | xUnit, FluentAssertions |
+| Database | SQLite + Entity Framework Core 8 (migrations) |
+| Tests | xUnit, FluentAssertions |
 
 ---
 
-## Структура решения
+## Solution structure
 
 ```
 Portfolio.sln
 ├── src
-│   ├── Portfolio.Domain          — сущности. Ни от чего не зависит
-│   ├── Portfolio.Shared          — контракты API (DTO), список языков, правила валидации
-│   ├── Portfolio.Application     — бизнес-логика и интерфейсы хранилищ
-│   ├── Portfolio.Infrastructure  — EF Core, SQLite, миграции, репозитории, контент
-│   ├── Portfolio.Api             — HTTP-эндпоинты, защита, хостинг клиента
-│   └── Portfolio.Client          — Blazor WASM: страницы, компоненты, переводы интерфейса
+│   ├── Portfolio.Domain          — entities. Depends on nothing
+│   ├── Portfolio.Shared          — API contracts (DTOs), language list, validation rules
+│   ├── Portfolio.Application     — business logic and repository interfaces
+│   ├── Portfolio.Infrastructure  — EF Core, SQLite, migrations, repositories, content
+│   ├── Portfolio.Api             — HTTP endpoints, security, client hosting
+│   └── Portfolio.Client          — Blazor WASM: pages, components, UI translations
 └── tests
-    └── Portfolio.Tests           — тесты логики и связки с базой
+    └── Portfolio.Tests           — logic tests and database integration tests
 ```
 
-Зависимости идут в одну сторону:
+Dependencies point in one direction only:
 
 ```
 Client ─┐
@@ -41,37 +42,37 @@ Api ────┘                    ▲
                      Infrastructure
 ```
 
-`Domain` не знает ни про EF, ни про HTTP. `Application` описывает *что* делает приложение,
-`Infrastructure` — *как* это хранится, `Api` — *как* это отдаётся наружу.
-Поэтому заменить SQLite на PostgreSQL можно, не тронув ни одной строчки бизнес-логики.
+`Domain` knows nothing about EF or HTTP. `Application` describes *what* the application does,
+`Infrastructure` — *how* it is stored, `Api` — *how* it is exposed.
+That is why SQLite can be swapped for PostgreSQL without touching a single line of business logic.
 
-### Основные файлы
+### Key files
 
-| Файл | Зачем нужен |
-|------|-------------|
-| `src/Portfolio.Infrastructure/Persistence/Seed/UkrainianContent.cs` | **весь текст сайта, украинская версия** |
-| `src/Portfolio.Infrastructure/Persistence/Seed/EnglishContent.cs` | **весь текст сайта, английская версия** |
-| `src/Portfolio.Client/Localization/UkrainianStrings.cs` | подписи интерфейса (кнопки, заголовки секций) |
-| `src/Portfolio.Client/Localization/EnglishStrings.cs` | то же на английском |
-| `src/Portfolio.Client/wwwroot/css/app.css` | дизайн-система: цвета, отступы, компоненты |
-| `src/Portfolio.Api/Middleware/SecurityHeadersMiddleware.cs` | заголовки безопасности |
-| `src/Portfolio.Api/Extensions/RateLimitingExtensions.cs` | лимиты частоты запросов |
+| File | Purpose |
+|------|---------|
+| `src/Portfolio.Infrastructure/Persistence/Seed/UkrainianContent.cs` | **all site copy, Ukrainian version** |
+| `src/Portfolio.Infrastructure/Persistence/Seed/EnglishContent.cs` | **all site copy, English version** |
+| `src/Portfolio.Client/Localization/UkrainianStrings.cs` | UI labels (buttons, section headings) |
+| `src/Portfolio.Client/Localization/EnglishStrings.cs` | the same in English |
+| `src/Portfolio.Client/wwwroot/css/app.css` | design system: colours, spacing, components |
+| `src/Portfolio.Api/Middleware/SecurityHeadersMiddleware.cs` | security headers |
+| `src/Portfolio.Api/Extensions/RateLimitingExtensions.cs` | request rate limits |
 
 ---
 
-## Запуск
+## Running locally
 
-Нужен [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0).
+Requires [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0).
 
 ```bash
 dotnet restore Portfolio.sln
 dotnet run --project src/Portfolio.Api
 ```
 
-Откройте `https://localhost:7150`. При первом запуске приложение само применит миграции
-и заполнит базу `portfolio.db` содержимым обоих языков.
+Open `https://localhost:7150`. On the first run the application applies migrations
+and fills `portfolio.db` with the content of both languages by itself.
 
-Тесты:
+Tests:
 
 ```bash
 dotnet test Portfolio.sln
@@ -79,62 +80,62 @@ dotnet test Portfolio.sln
 
 ---
 
-## Две языковые версии
+## Two language versions
 
-Язык определяется так: сохранённый выбор в браузере → язык браузера → украинский.
-Переключатель **UK / EN** стоит в шапке, выбор запоминается в `localStorage`.
+The language is resolved in this order: stored choice in the browser → browser language → Ukrainian.
+The **UK / EN** switch sits in the header and the choice is remembered in `localStorage`.
 
-Контент и подписи разделены:
+Content and labels are kept apart:
 
-* **контент** (обо мне, проекты, опыт) лежит в базе, у каждой записи есть `LanguageCode`;
-  API отдаёт нужную версию по параметру `?lang=`;
-* **подписи интерфейса** (кнопки, заголовки секций, тексты ошибок) лежат в классах
-  `UkrainianStrings` / `EnglishStrings`.
+* **content** (about, projects, experience) lives in the database, every row has a `LanguageCode`;
+  the API returns the right version based on the `?lang=` parameter;
+* **UI labels** (buttons, section headings, error messages) live in the
+  `UkrainianStrings` / `EnglishStrings` classes.
 
-Класс `UiStrings` объявляет все подписи как `required`, поэтому забыть перевести новую
-строку невозможно — проект просто не соберётся.
+The `UiStrings` class declares every label as `required`, so forgetting to translate a new
+string is impossible — the project simply will not compile.
 
-### Добавить третий язык
+### Adding a third language
 
-1. Дописать код языка в `Portfolio.Shared/Contracts/Languages.cs`.
-2. Добавить пакет контента рядом с `UkrainianContent.cs` и зарегистрировать его в `PortfolioSeedData`.
-3. Добавить набор подписей рядом с `UkrainianStrings.cs` и вернуть его из `UiStringsCatalog`.
+1. Add the language code to `Portfolio.Shared/Contracts/Languages.cs`.
+2. Add a content pack next to `UkrainianContent.cs` and register it in `PortfolioSeedData`.
+3. Add a label set next to `UkrainianStrings.cs` and return it from `UiStringsCatalog`.
 
-Ни один компонент интерфейса при этом не меняется.
-
----
-
-## Как поменять содержимое под себя
-
-1. Откройте `Persistence/Seed/UkrainianContent.cs` и `EnglishContent.cs`, впишите свои данные.
-2. Удалите файл `src/Portfolio.Api/portfolio.db`.
-3. Запустите приложение — база создастся заново с новым текстом.
-
-Фото и резюме кладутся в `src/Portfolio.Client/wwwroot/`:
-
-* фото — `wwwroot/img/avatar.jpg`, в `PhotoUrl` укажите `img/avatar.jpg`;
-* резюме — `wwwroot/files/cv.pdf`, в `ResumeUrl` укажите `files/cv.pdf`.
-
-Цвета и шрифт меняются в одном месте — блок `:root` в `wwwroot/css/app.css`.
+No UI component needs to change.
 
 ---
 
-## Миграции базы данных
+## Making the content your own
 
-Схема базы описана миграциями EF Core в `src/Portfolio.Infrastructure/Migrations`.
-При старте приложение применяет все непринятые миграции автоматически.
+1. Open `Persistence/Seed/UkrainianContent.cs` and `EnglishContent.cs`, put your own data in.
+2. Delete `src/Portfolio.Api/portfolio.db`.
+3. Start the application — the database is recreated with the new copy.
 
-Если поменяли сущности — создайте новую миграцию:
+Photo and CV go into `src/Portfolio.Client/wwwroot/`:
+
+* photo — `wwwroot/img/avatar.jpg`, set `PhotoUrl` to `img/avatar.jpg`;
+* CV — `wwwroot/files/cv.pdf`, set `ResumeUrl` to `files/cv.pdf`.
+
+Colours and the font are changed in a single place — the `:root` block in `wwwroot/css/app.css`.
+
+---
+
+## Database migrations
+
+The schema is described by EF Core migrations in `src/Portfolio.Infrastructure/Migrations`.
+On startup the application applies every pending migration automatically.
+
+If you change the entities, create a new migration:
 
 ```bash
-dotnet tool install --global dotnet-ef          # один раз
+dotnet tool install --global dotnet-ef          # once
 
-dotnet ef migrations add ИмяМиграции \
+dotnet ef migrations add MigrationName \
   --project src/Portfolio.Infrastructure \
   --startup-project src/Portfolio.Infrastructure
 ```
 
-Проверить, что снимок модели совпадает с сущностями:
+Check that the model snapshot matches the entities:
 
 ```bash
 dotnet ef migrations has-pending-model-changes \
@@ -142,88 +143,90 @@ dotnet ef migrations has-pending-model-changes \
   --startup-project src/Portfolio.Infrastructure
 ```
 
-Стартовый проект здесь — сам `Portfolio.Infrastructure`, а не `Portfolio.Api`:
-контекст для инструмента создаёт `PortfolioDbContextFactory`. Благодаря этому
-пакет `Microsoft.EntityFrameworkCore.Design` нужен только в слое данных
-и не тянется в веб-приложение.
+The startup project here is `Portfolio.Infrastructure` itself, not `Portfolio.Api`:
+the context for the tool is created by `PortfolioDbContextFactory`. Thanks to that the
+`Microsoft.EntityFrameworkCore.Design` package is only needed in the data layer
+and is not pulled into the web application.
 
-Применять миграции вручную не нужно — приложение делает это при старте.
+Applying migrations by hand is not needed — the application does it on startup.
 
-Откатить последнюю ещё не применённую миграцию — `dotnet ef migrations remove` с теми же ключами.
+To roll back the last migration that has not been applied yet, run `dotnet ef migrations remove`
+with the same options.
 
 ---
 
 ## API
 
-| Метод | Адрес | Что делает |
-|-------|-------|------------|
-| GET | `/api/profile?lang=uk` | данные первого экрана и блока «Обо мне» |
-| GET | `/api/skills?lang=uk` | технологии по категориям |
-| GET | `/api/projects?lang=uk` | проекты |
-| GET | `/api/experience?lang=uk` | опыт работы |
-| POST | `/api/contact` | приём сообщения из формы |
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/api/profile?lang=uk` | hero section and "about" data |
+| GET | `/api/skills?lang=uk` | technologies grouped by category |
+| GET | `/api/projects?lang=uk` | projects |
+| GET | `/api/experience?lang=uk` | work experience |
+| POST | `/api/contact` | accepts a message from the contact form |
+| GET | `/health` | liveness probe, returns `{"status":"ok"}` |
 
-Параметр `lang` принимает `uk` и `en`; любое другое значение молча заменяется на украинский.
-GET-ответы кэшируются на 10 минут **отдельно по каждому языку**, поэтому база не нагружается
-при наплыве посетителей.
+The `lang` parameter accepts `uk` and `en`; any other value silently falls back to Ukrainian.
+GET responses are cached for 10 minutes **separately per language**, so the database is not
+hammered when traffic spikes.
 
-`POST /api/contact` возвращает код исхода (`accepted`, `rate_limited`, `failed`), а не готовый
-текст: текст подставляет клиент на нужном языке.
+`POST /api/contact` returns an outcome code (`accepted`, `rate_limited`, `failed`) rather than
+ready-made text: the client renders the message in the current language.
 
 ---
 
-## Защита
+## Security
 
-Сайт публичный, поэтому исходим из того, что любой запрос может быть вредоносным.
+The site is public, so every request is treated as potentially hostile.
 
-| Угроза | Что сделано |
-|--------|-------------|
-| XSS | Blazor экранирует любой вывод; жёсткий `Content-Security-Policy` запрещает сторонние скрипты |
+| Threat | Mitigation |
+|--------|------------|
+| XSS | Blazor encodes all output; a strict `Content-Security-Policy` blocks third-party scripts |
 | Clickjacking | `X-Frame-Options: DENY` + `frame-ancestors 'none'` |
-| MIME-sniffing | `X-Content-Type-Options: nosniff` |
-| SQL-инъекции | EF Core параметризует все запросы, «сырого» SQL в коде нет |
-| Подбор и флуд | лимиты запросов по IP: 120/мин на сайт, 3/10 мин на форму |
-| Спам в форме | скрытое поле-ловушка (honeypot) + лимит 5 сообщений в час с одного адреса |
-| Мусорные данные | валидация по атрибутам — и в браузере, и **обязательно** на сервере |
-| Перегрузка тела запроса | тело запроса ограничено 64 КБ |
-| Утечка деталей ошибок | необработанные исключения отдают нейтральный JSON, подробности только в логах |
-| Хранение персональных данных | IP отправителя сохраняется в виде SHA-256 с солью, а не в открытом виде |
-| Перехват трафика | HSTS на год + перенаправление на HTTPS |
+| MIME sniffing | `X-Content-Type-Options: nosniff` |
+| SQL injection | EF Core parameterises every query, there is no raw SQL in the code |
+| Brute force and flooding | per-IP rate limits: 120/min site-wide, 3 per 10 min on the form |
+| Form spam | hidden honeypot field + a limit of 5 messages per hour from one address |
+| Junk data | attribute-based validation in the browser and, crucially, **again on the server** |
+| Oversized payloads | request body capped at 64 KB |
+| Error detail leakage | unhandled exceptions return neutral JSON, details go to the logs only |
+| Personal data storage | the sender IP is stored as a salted SHA-256 hash, never in plain text |
+| Traffic interception | HSTS for one year + redirect to HTTPS |
 
 ### HTTPS
 
-Любой запрос по http получает постоянный редирект (308) на https, а в продакшене
-добавляется `Strict-Transport-Security` на год — браузер больше не пойдёт на сайт
-по незащищённому протоколу, даже если пользователь наберёт адрес вручную.
+Any http request gets a permanent redirect (308) to https, and in production a
+`Strict-Transport-Security` header valid for a year is added — the browser will no longer
+use the insecure protocol even if the address is typed by hand.
 
-**На своей машине** браузер сначала пишет «Not secure»: сертификат разработки
-самоподписанный и его никто не удостоверял. Соединение при этом уже
-зашифровано — не хватает только доверия к сертификату.
+**On your own machine** the browser first shows "Not secure": the development certificate is
+self-signed and nobody vouched for it. The connection is already encrypted — only trust in
+the certificate is missing.
 
-На Windows и macOS достаточно одной команды:
+On Windows and macOS a single command is enough:
 
 ```bash
 dotnet dev-certs https --trust
 ```
 
-На Linux она доводит дело до конца не везде: системному хранилищу сертификат
-не отдаётся, а Chrome и Firefox системному хранилищу и так не верят — у них
-свои базы (NSS). Для Linux в репозитории есть скрипт, который закрывает все
-три места сразу:
+On Linux that command does not finish the job everywhere: the certificate is not handed to the
+system store, and Chrome and Firefox do not trust the system store anyway — they keep their own
+databases (NSS). For Linux the repository ships a script that covers all three places at once:
 
 ```bash
-sudo apt install libnss3-tools   # один раз, если certutil ещё нет
+sudo apt install libnss3-tools   # once, if certutil is missing
 bash scripts/trust-dev-cert.sh
 ```
 
-После него закройте браузер полностью и откройте заново — появится замок.
-Скрипт можно запускать повторно, старая запись заменяется.
+After running it, close the browser completely and reopen it — the padlock appears.
+The script is safe to re-run, the old entry is replaced.
 
-На боевом сайте это не нужно: там сертификат выдаёт хостинг или Let's Encrypt.
+None of this is needed on the live site: there the certificate comes from the hosting
+provider or Let's Encrypt.
 
-**За reverse proxy** (nginx, Cloudflare) сертификат обычно живёт на прокси, а до
-приложения запрос доходит по http. Чтобы приложение видело настоящие протокол и IP
-клиента, перечислите адреса прокси в конфигурации:
+**Behind a reverse proxy** (nginx, Cloudflare) the certificate usually lives on the proxy while
+the application receives plain http. So that the application sees the real protocol and client IP,
+list the proxy addresses in the configuration:
 
 ```json
 "Security": {
@@ -232,71 +235,71 @@ bash scripts/trust-dev-cert.sh
 }
 ```
 
-Пока список пуст, заголовки `X-Forwarded-*` не читаются вовсе — и это правильно:
-доверять им от кого угодно нельзя, иначе любой посетитель подделает свой IP
-и обойдёт ограничение частоты запросов.
+While the list is empty the `X-Forwarded-*` headers are not read at all — and that is the right
+default: trusting them from anyone would let any visitor forge their IP and bypass the rate limits.
 
-### Перед публикацией в интернете
+### Before going public
 
-Задайте соль для хеширования IP — без неё приложение не стартует вне режима разработки:
+Set the salt used to hash IP addresses — without it the application refuses to start outside
+development mode:
 
 ```bash
-export Contact__IpHashSalt="строка-минимум-16-символов"
+export Contact__IpHashSalt="at-least-16-characters"
 ```
 
 ---
 
-## Деплой
+## Deployment
 
-Приложение упаковано в Docker: сборка идёт в образе с SDK, в итоговый образ
-попадает только готовое приложение без исходников.
+The application is packaged with Docker: the build runs in an SDK image, and only the finished
+application — without sources — ends up in the final image.
 
 ### Render
 
-В репозитории лежит `render.yaml`, поэтому настраивать сервис руками не нужно:
+The repository contains `render.yaml`, so nothing has to be configured by hand:
 
-1. На [render.com](https://render.com) → **New** → **Blueprint**.
-2. Подключить репозиторий и выбрать ветку с этим кодом.
-3. Render прочитает `render.yaml`, создаст сервис и сгенерирует `Contact__IpHashSalt`.
-4. Первая сборка занимает 5–10 минут: собирается Blazor WASM.
+1. Go to [render.com](https://render.com) → **New** → **Blueprint**.
+2. Connect the repository and pick the branch with this code.
+3. Render reads `render.yaml`, creates the service and generates `Contact__IpHashSalt`.
+4. The first build takes 5–10 minutes because Blazor WASM is compiled.
 
-Сайт откроется на поддомене вида `artem-koval-portfolio.onrender.com`,
-сертификат выпускается автоматически.
+The site becomes available on a subdomain such as `artem-koval-portfolio.onrender.com`,
+with a certificate issued automatically.
 
-Что задано в `render.yaml` и почему:
+What `render.yaml` sets and why:
 
-| Переменная | Значение | Зачем |
-|------------|----------|-------|
-| `ASPNETCORE_ENVIRONMENT` | `Production` | включает HSTS и скрывает детали ошибок |
-| `Contact__IpHashSalt` | генерируется Render | без неё приложение не стартует |
-| `Security__TrustAllProxies` | `true` | TLS завершается на прокси Render; без этого все посетители выглядят одним IP и лимиты работают неверно |
+| Variable | Value | Reason |
+|----------|-------|--------|
+| `ASPNETCORE_ENVIRONMENT` | `Production` | enables HSTS and hides error details |
+| `Contact__IpHashSalt` | generated by Render | the application will not start without it |
+| `Security__TrustAllProxies` | `true` | TLS terminates on Render's proxy; without this every visitor looks like the same IP and the rate limits misfire |
 
-**Ограничения бесплатного тарифа.** Сервис засыпает после 15 минут простоя,
-первый запрос после сна ждёт около минуты. Постоянного диска на бесплатном
-тарифе нет, поэтому база пересоздаётся при каждом перезапуске: содержимое
-сайта восстановится из кода, а сообщения из формы потеряются. Если форма
-нужна всерьёз — либо платный тариф с диском, либо отправка писем на почту.
+**Free tier limitations.** The service goes to sleep after 15 minutes of inactivity and the first
+request after that waits about a minute. There is no persistent disk on the free tier, so the
+database is recreated on every restart: the site content is restored from code, but messages sent
+through the form are lost. If the form matters, either move to a paid tier with a disk or send the
+messages by email.
 
-### Любая другая площадка с Docker
+### Any other Docker host
 
 ```bash
 docker build -t portfolio .
 docker run -p 8080:8080 \
-  -e Contact__IpHashSalt="строка-минимум-16-символов" \
+  -e Contact__IpHashSalt="at-least-16-characters" \
   -e Security__TrustAllProxies=true \
   -v portfolio-data:/data \
   portfolio
 ```
 
-Порт берётся из переменной `PORT`, если площадка её задаёт, иначе 8080.
-База лежит в томе `/data` — без него данные пропадут при следующем деплое.
+The port is taken from the `PORT` variable when the platform provides one, otherwise 8080.
+The database lives in the `/data` volume — without it the data disappears on the next deploy.
 
-Проверка живости — `GET /health`, отвечает `{"status":"ok"}`.
+Liveness probe — `GET /health`, returns `{"status":"ok"}`.
 
-### За собственным nginx
+### Behind your own nginx
 
-Если TLS завершается на вашем nginx, укажите его адрес явно вместо
-`TrustAllProxies` — так надёжнее:
+If TLS terminates on your nginx, name its address explicitly instead of using
+`TrustAllProxies` — that is the safer option:
 
 ```json
 "Security": {
@@ -307,10 +310,10 @@ docker run -p 8080:8080 \
 
 ---
 
-## Что можно добавить дальше
+## Possible next steps
 
-* отправку письма на почту при новом сообщении из формы;
-* админ-панель с авторизацией, чтобы править контент без пересборки;
-* размещение Bootstrap и шрифта на своём домене — тогда `Content-Security-Policy` сократится до `'self'`;
-* отдельные адреса для языковых версий (`/en/...`) — это лучше индексируется поисковиками,
-  чем переключение через `localStorage`.
+* email notification when a new message arrives through the form;
+* an admin panel with authentication so the content can be edited without a rebuild;
+* self-hosting Bootstrap and the font — that shrinks `Content-Security-Policy` down to `'self'`;
+* separate URLs per language (`/en/...`) — search engines index those better than a
+  `localStorage`-based switch.
